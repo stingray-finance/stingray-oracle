@@ -1,0 +1,17 @@
+# Stingray Oracle
+* Package
+```
+0x524c9e4983970477bf711cad5a21c92e03b7dc17cda9fe738c99cceed24a0e7a
+```
+* UpgradeCap
+```
+0x66d090191f0021c914b5af41a2e41dd9a395e8e72d68e39b776af280a68d6e52
+```
+* AdminCap
+```
+0x172119e1fe845e67c89bf37d5a5a9f1427f8a06be0c81173a0fa24b00755ba49
+```
+* Stingray Oracle
+```
+0x0c8a64f7387a0d583759430b03df86fc418d2ac28d05baa393263a59e76dce34
+```

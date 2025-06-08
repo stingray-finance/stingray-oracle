@@ -1,2 +1,252 @@
 module stingray_oracle::stingray_oracle;
 
+// === Imports ===
+use sui::{
+    vec_set::{ Self, VecSet},
+    clock::{ Clock },
+    dynamic_field::{ Self as df},
+};
+
+use std::{
+    type_name::{ Self, TypeName },
+};
+
+use stingray_oracle::{
+    oracle_aggregator::{ Self, OracleAggregator },
+};
+use switchboard::{
+    aggregator::{ Aggregator },
+};
+use pyth::{
+    price_info::{ PriceInfoObject },
+    price_identifier::{ PriceIdentifier },
+};
+use SupraOracle::{
+    SupraSValueFeed::{ OracleHolder },
+};
+
+// === Errors ===
+const EPriceExpired: u64 = 0;
+fun err_price_expired() { abort EPriceExpired }
+const EAssetAlreadyExisted: u64 = 1;
+fun err_asset_already_existed(){ abort EAssetAlreadyExisted }
+const EOracleAggregatorNotActive: u64 = 2;
+fun err_oracle_aggregator_not_active(){ abort EOracleAggregatorNotActive } 
+const EVersionNotExisted: u64 = 3;
+fun err_version_not_existed(){ abort EVersionNotExisted }
+const EVersionAlreadyExisted: u64 = 4;
+fun err_version_already_existed(){ abort EVersionAlreadyExisted }
+const EVersionNotAllowed: u64 = 5;
+fun err_version_not_allowed(){ abort EVersionNotAllowed }
+// === Consts ===
+const VERSION: u64 =1;
+
+public struct AdminCap has key, store {
+    id: UID,
+}
+
+public struct StingrayOracle has key{
+    id: UID,
+    versions: VecSet<u64>,
+}
+
+// === Init Functions ===
+fun init(ctx: &mut TxContext){
+    
+    let (stingray_oracle, admin_cap) = new_oracle(ctx);
+    transfer::share_object(stingray_oracle);
+    transfer::public_transfer(admin_cap, ctx.sender());
+}
+// === Public Functions ===
+public fun add_version(
+    self: &mut StingrayOracle,
+    _: &AdminCap,
+    new_version: u64,
+){
+    if (self.versions.contains(&new_version)){
+        err_version_already_existed();
+    };
+    self.versions.insert(new_version);
+}
+
+public fun remove_version(
+    self: &mut StingrayOracle,
+    _: &AdminCap,
+    to_remove_version: u64,
+){
+    if (!self.versions.contains(    &to_remove_version)){
+        err_version_not_existed();
+    };
+    self.versions.remove(&to_remove_version);
+}
+
+public fun new_oracle_aggregator<CoinT>(
+    self: &mut StingrayOracle,
+    _: &AdminCap,
+    pyth: Option<address>,
+    switchboard: Option<address>,
+    supra: Option<u32>,
+    decimals: u8,
+    tolerance_ms: u64,
+){
+    let oracle_aggregator = oracle_aggregator::new<CoinT>(pyth, switchboard, supra, decimals, tolerance_ms);
+    let key = type_name::get<CoinT>();
+    if (df::exists_(&self.id, key)){
+        err_asset_already_existed();
+    };
+    df::add(&mut self.id, key, oracle_aggregator);
+}
+
+public fun update_tolerance_ms<CoinT>(
+    self: &mut StingrayOracle,
+    new_tolerance_ms: u64,
+){
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut<CoinT>();
+    oracle_aggregator.update_tolerance_ms(new_tolerance_ms);
+}
+
+public fun deactivate<CoinT>(
+    self: &mut StingrayOracle,
+){
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut<CoinT>();
+    oracle_aggregator.active();
+}
+
+public fun activate<CoinT>(
+    self: &mut StingrayOracle,
+){
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut<CoinT>();
+    oracle_aggregator.deactive();
+}
+
+public fun update_pyth<CoinT>(
+    self: &mut StingrayOracle,
+    _: &AdminCap,
+    new_pyth: Option<address>,
+){
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut<CoinT>();
+    oracle_aggregator.set_pyth(new_pyth);
+}
+
+public fun update_switchboard<CoinT>(
+    self: &mut StingrayOracle,
+    _: &AdminCap,
+    new_switchboard: Option<address>,
+){
+    
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut<CoinT>();
+    oracle_aggregator.set_switchboard(new_switchboard);
+}
+
+public fun update_supra<CoinT>(
+    self: &mut StingrayOracle,
+    _: &AdminCap,
+    new_supra: Option<u32>,
+){
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut<CoinT>();
+    oracle_aggregator.set_supra(new_supra);
+}
+
+public fun borrow_oracle_aggregator<CoinT>(
+    self: &StingrayOracle,
+): &OracleAggregator<CoinT>{
+    
+    if (!self.is_version_allowed()){
+        err_version_not_allowed();
+    };
+    
+    let oracle_aggregator = df::borrow<TypeName, OracleAggregator<CoinT>>(&self.id, type_name::get<CoinT>());
+    
+    if(!oracle_aggregator.is_active()){ 
+        err_oracle_aggregator_not_active();
+    };
+    oracle_aggregator
+}
+
+public fun borrow_oracle_aggregator_mut<CoinT>(
+    self: &mut StingrayOracle,
+): &mut OracleAggregator<CoinT>{
+    
+    if (!self.is_version_allowed()){
+        err_version_not_allowed();
+    };
+    
+    let oracle_aggregator = df::borrow_mut<TypeName, OracleAggregator<CoinT>>(&mut self.id, type_name::get<CoinT>());
+    
+    if(!oracle_aggregator.is_active()){ 
+        err_oracle_aggregator_not_active();
+    };
+    oracle_aggregator
+}
+
+public fun update_price_from_switchboard<CoinT>(
+    self: &mut StingrayOracle,
+    aggregator: &Aggregator,
+    clock: &Clock,
+){
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut<CoinT>();
+    let mut price_sources = oracle_aggregator::new_price_sources<CoinT>();
+    price_sources.add_switchboard_price(oracle_aggregator, aggregator);
+    oracle_aggregator.update_price(clock, price_sources);
+}
+
+public fun update_price_from_pyth<CoinT>(
+    self: &mut StingrayOracle,
+    price_info_object: &PriceInfoObject,
+    clock: &Clock,
+    expected_price_identifier: PriceIdentifier,
+){
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut<CoinT>();
+    let mut price_sources = oracle_aggregator::new_price_sources<CoinT>();
+    price_sources.add_pyth_price(oracle_aggregator, price_info_object, clock, expected_price_identifier);
+    oracle_aggregator.update_price(clock, price_sources);
+}
+
+public fun update_price_from_supra<CoinT>(
+    self: &mut StingrayOracle,
+    supra_holder: &OracleHolder,
+    pair_id: u32,
+    clock: &Clock
+){
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut<CoinT>();
+    let mut price_sources = oracle_aggregator::new_price_sources<CoinT>();
+    price_sources.add_supra_price(oracle_aggregator, supra_holder, pair_id);
+    oracle_aggregator.update_price(clock, price_sources);
+}
+
+// === Public-View Functions ===
+public fun is_version_allowed(
+    self: &StingrayOracle,
+): bool{
+    let pkg_version = VERSION;
+    self.versions.contains(&pkg_version)
+}
+
+public fun get_price<CoinT>(
+    self: &StingrayOracle,
+    clock: &Clock
+): (u64, u8){
+    let oracle_aggregator =self.borrow_oracle_aggregator<CoinT>();
+
+    if (clock.timestamp_ms() - oracle_aggregator.latest_update_ms() > oracle_aggregator.tolerance_ms()){
+        err_price_expired();
+    };
+    oracle_aggregator.price_info()
+}
+
+// === Private Functions ===
+fun new_oracle(
+    ctx: &mut TxContext,
+):(StingrayOracle, AdminCap){
+    let stingray_oracle = StingrayOracle{
+        id: object::new(ctx),
+        versions: vec_set::singleton(VERSION),
+    };
+
+    let admin_cap = AdminCap{
+        id: object::new(ctx),
+    };
+
+    (stingray_oracle, admin_cap)
+}
+
