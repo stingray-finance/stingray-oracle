@@ -48,6 +48,7 @@ public struct AdminCap has key, store {
 public struct StingrayOracle has key{
     id: UID,
     versions: VecSet<u64>,
+    asset_types: VecSet<TypeName>,
 }
 
 // === Init Functions ===
@@ -94,6 +95,7 @@ public fun new_oracle_aggregator<CoinT>(
     if (df::exists_(&self.id, key)){
         err_asset_already_existed();
     };
+    self.asset_types.insert(key);
     df::add(&mut self.id, key, oracle_aggregator);
 }
 
@@ -234,6 +236,17 @@ public fun get_price<CoinT>(
     oracle_aggregator.price_info()
 }
 
+public fun is_price_supported<CoinT>(
+    self: &StingrayOracle
+): bool{
+    let asset_type = type_name::get<CoinT>();
+    if (self.asset_types.contains(&asset_type)){
+        df::borrow<TypeName, OracleAggregator<CoinT>>(&self.id, asset_type).is_active()
+    }else{
+        false
+    }    
+}
+
 // === Private Functions ===
 fun new_oracle(
     ctx: &mut TxContext,
@@ -241,6 +254,7 @@ fun new_oracle(
     let stingray_oracle = StingrayOracle{
         id: object::new(ctx),
         versions: vec_set::singleton(VERSION),
+        asset_types: vec_set::empty(),
     };
 
     let admin_cap = AdminCap{
