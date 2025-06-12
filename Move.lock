@@ -2,7 +2,7 @@
 
 [move]
 version = 3
-manifest_digest = "244E8CF39C1022D47BB2ABF84F8DB463A3D6AAB2571D52D7176AD9285FE09288"
+manifest_digest = "DECE66875AE59F89A435F7B90332AE7B7CAEFE3C66A314064C87B896132CD050"
 deps_digest = "CAFAD8A7CF51067FB4358215BECB86BD100DD64E57C2AC8A7AE7D74B688F5965"
 dependencies = [
   { id = "Bridge", name = "Bridge" },
@@ -30,7 +30,7 @@ source = { git = "https://github.com/MystenLabs/sui.git", rev = "b5633abb4177", 
 
 [[move.package]]
 id = "Pyth"
-source = { local = "../lib/pyth" }
+source = { git = "https://github.com/pyth-network/pyth-crosschain.git", rev = "sui-contract-mainnet", subdir = "target_chains/sui/contracts" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -56,7 +56,7 @@ dependencies = [
 
 [[move.package]]
 id = "SupraOracle"
-source = { local = "../lib/supra" }
+source = { git = "https://github.com/naviprotocol/dora-interface.git", rev = "main", subdir = "sui/mainnet/supra_holder" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -73,7 +73,7 @@ dependencies = [
 
 [[move.package]]
 id = "Wormhole"
-source = { local = "../lib/wormhole" }
+source = { git = "https://github.com/wormhole-foundation/wormhole.git", rev = "sui/mainnet", subdir = "sui/wormhole" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -81,7 +81,7 @@ dependencies = [
 
 [[move.package]]
 id = "supra_utils"
-source = { local = "../lib/supra_utils" }
+source = { git = "https://github.com/naviprotocol/dora-interface.git", rev = "main", subdir = "sui/mainnet/supra_utils" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -89,7 +89,7 @@ dependencies = [
 
 [[move.package]]
 id = "supra_validator"
-source = { local = "../lib/supra_validator" }
+source = { git = "https://github.com/naviprotocol/dora-interface.git", rev = "main", subdir = "sui/mainnet/supra_validator" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -105,6 +105,6 @@ flavor = "sui"
 
 [env.mainnet]
 chain-id = "35834a8a"
-original-published-id = "0x625048cf13f8c67bc9e18d11952701b32597969fb10aa4f1736bafc1762776e4"
-latest-published-id = "0x625048cf13f8c67bc9e18d11952701b32597969fb10aa4f1736bafc1762776e4"
+original-published-id = "0x5cc8ad9b3d0432356b0e204f41a28dc85edbe9bf2488e48032a53b75f0ef1c1c"
+latest-published-id = "0x5cc8ad9b3d0432356b0e204f41a28dc85edbe9bf2488e48032a53b75f0ef1c1c"
 published-version = "1"

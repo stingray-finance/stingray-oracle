@@ -5,11 +5,11 @@ edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
 # authors = ["..."]      # e.g., ["Joe Smith (joesmith@noemail.com)", "John Snow (johnsnow@noemail.com)"]
 
 [dependencies]
-# Pyth = {git = "https://github.com/pyth-network/pyth-crosschain.git", subdir = "target_chains/sui/contracts", rev = "sui-contract-mainnet"}
-# SupraOracle = {git = "https://github.com/naviprotocol/dora-interface.git", subdir = "sui/mainnet/supra_holder", rev = "main"}
+Pyth = {git = "https://github.com/pyth-network/pyth-crosschain.git", subdir = "target_chains/sui/contracts", rev = "sui-contract-mainnet"}
+SupraOracle = {git = "https://github.com/naviprotocol/dora-interface.git", subdir = "sui/mainnet/supra_holder", rev = "main"}
 Switchboard = {git = "https://github.com/suilend/switchboard.git", subdir = "on_demand/", rev = "mainnet"}
-Pyth = { local = "../lib/pyth" }
-SupraOracle = { local = "../lib/supra" }
+#Pyth = { local = "../lib/pyth" }
+#SupraOracle = { local = "../lib/supra" }
 
 # For remote import, use the `{ git = "...", subdir = "...", rev = "..." }`.
 # Revision can be a branch, a tag, and a commit hash.
