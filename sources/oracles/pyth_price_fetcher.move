@@ -1,6 +1,9 @@
 module stingray_oracle::pyth_price_fetcher;
 
 // === Imports ===
+use std::{ 
+    type_name::{ TypeName},
+};
 
 use sui::{
     clock::{ Clock },
@@ -21,13 +24,14 @@ fun err_price_identifier_not_matched() { abort EPriceIdentifierNotMatched }
 
 // === Constants ===
 
-public fun fetch_price<CoinT>(
+public fun fetch_price(
+    coin_type: TypeName,
     price_info_object: &PriceInfoObject,
     clock: &Clock,
     expected_price_identifier: PriceIdentifier,
     required_decimals: u8, 
     tolerance_ms: u64,
-): Option<CurrentPrice<CoinT>>{
+): Option<CurrentPrice>{
     let price_struct = pyth::get_price_no_older_than(price_info_object, clock, tolerance_ms);
 
     let price_info = price_info_object.get_price_info_from_price_info_object();
@@ -55,5 +59,5 @@ public fun fetch_price<CoinT>(
         price = price * 10u64.pow(required_decimals - decimal_u8);
     };
 
-    option::some(current_price::new_current_price(price, required_decimals, timestamp))
+    option::some(current_price::new_current_price(coin_type, price, required_decimals, timestamp))
 }

@@ -1,6 +1,9 @@
 module stingray_oracle::oracle_aggregator;
 
 // === Imports ===
+use std::{
+    type_name::{ TypeName },
+};
 
 use sui::{
     clock::{ Clock },
@@ -39,7 +42,8 @@ const SUPRA_KEY: vector<u8> = b"supra";
 const TOLERANCE_OF_PRICE_DIFF: u64 = 50;
 
 // === Structs ===
-public struct OracleAggregator<phantom CoinT> has store {
+public struct OracleAggregator has store {
+    coin_type: TypeName,
     price: PriceInfo,
     oracles: Oracles,
     latest_update_ms: u64,
@@ -58,27 +62,30 @@ public struct Oracles has store {
     supra: Option<u32>,
 }
 
-public struct PriceSources<phantom CoinT> has copy, drop{
-    sources: VecMap<vector<u8>, Option<CurrentPrice<CoinT>>>,
+public struct PriceSources has copy, drop{
+    coin_type: TypeName,
+    sources: VecMap<vector<u8>, Option<CurrentPrice>>,
 }
 
 // === Public-Write Functions ===
-public fun new_price_sources<CoinT>(
-): PriceSources<CoinT>{
-    PriceSources<CoinT>{
-        sources: vec_map::empty<vector<u8>, Option<CurrentPrice<CoinT>>>(),
+public fun new_price_sources(
+    coin_type: TypeName,
+): PriceSources{
+    PriceSources{
+        coin_type,
+        sources: vec_map::empty<vector<u8>, Option<CurrentPrice>>(),
     }
 }
 
 // === Public-View Functions ===
-public fun price_info<CoinT>(
-    self: &OracleAggregator<CoinT>,
+public fun price_info(
+    self: &OracleAggregator,
 ):(u64, u8){
     (self.price.price, self.price.decimals)
 }
 
-public fun oracle_amount<CoinT>(
-    self: &OracleAggregator<CoinT>,
+public fun oracle_amount(
+    self: &OracleAggregator,
 ): u64{
     let mut amount = 0;
     if (self.oracles.pyth.is_some()){
@@ -93,56 +100,58 @@ public fun oracle_amount<CoinT>(
     amount
 }
 
-public fun latest_update_ms<CoinT>(
-    self: &OracleAggregator<CoinT>,
+public fun latest_update_ms(
+    self: &OracleAggregator,
 ): u64{
     self.latest_update_ms
 }
 
-public fun is_active<CoinT>(
-    self: &OracleAggregator<CoinT>,
+public fun is_active(
+    self: &OracleAggregator,
 ):bool{
     self.is_active
 }
 
-public fun tolerance_ms<CoinT>(
-    self: &OracleAggregator<CoinT>,
+public fun tolerance_ms(
+    self: &OracleAggregator,
 ): u64{
     self.tolerance_ms
 }
 
 public use fun borrow_pyth as OracleAggregator.pyth;
-public fun borrow_pyth<CoinT>(
-    self: &OracleAggregator<CoinT>
+public fun borrow_pyth(
+    self: &OracleAggregator
 ): &Option<ID>{
     &self.oracles.pyth
 }
 
 public use fun borrow_switchboard as OracleAggregator.switchboard;
-public fun borrow_switchboard<CoinT>(
-    self: &OracleAggregator<CoinT>
+public fun borrow_switchboard(
+    self: &OracleAggregator
 ): &Option<ID>{
     &self.oracles.switchboard
 }
 
 public use fun borrow_supra as OracleAggregator.supra;
-public fun borrow_supra<CoinT>(
-    self: &OracleAggregator<CoinT>
+public fun borrow_supra(
+    self: &OracleAggregator
 ): &Option<u32>{
     &self.oracles.supra
 }
 
 // === Public-Package Functions ===
-public(package) fun new<CoinT>(
+public(package) fun new(
+    coin_type: TypeName,
     pyth: Option<address>,
     switchboard: Option<address>,
     supra: Option<u32>,
     decimals: u8,
     tolerance_ms: u64,
-): OracleAggregator<CoinT>{
+): OracleAggregator{
     let pyth_config = if (pyth.is_some()) option::some(pyth.destroy_some().to_id()) else option::none();
     let switchboard_config = if (switchboard.is_some()) option::some(switchboard.destroy_some().to_id()) else option::none();
-    OracleAggregator<CoinT>{
+    OracleAggregator{
+        coin_type, 
         price: PriceInfo{
             price: 0,
             decimals,
@@ -159,59 +168,61 @@ public(package) fun new<CoinT>(
 }
 
 public use fun activate_aggregator as OracleAggregator.active;
-public(package) fun activate_aggregator<CoinT>(
-    self: &mut OracleAggregator<CoinT>,    
+public(package) fun activate_aggregator(
+    self: &mut OracleAggregator,    
 ){
     self.is_active = true;
 }
 
 public use fun deactivate_aggregator as OracleAggregator.deactive;
-public(package) fun deactivate_aggregator<CoinT>(
-    self: &mut OracleAggregator<CoinT>,
+public(package) fun deactivate_aggregator(
+    self: &mut OracleAggregator,
 ){
     self.is_active = false;
 }
 
-public fun update_tolerance_ms<CoinT>(
-    self: &mut OracleAggregator<CoinT>,
+public fun update_tolerance_ms(
+    self: &mut OracleAggregator,
     new_tolerance_ms: u64
 ){
     self.tolerance_ms = new_tolerance_ms;
 }
 
 // ** Switchboard **
-public(package) fun set_switchboard<CoinT>(
-    self: &mut OracleAggregator<CoinT>,
+public(package) fun set_switchboard(
+    self: &mut OracleAggregator,
     new_switchboard: Option<address>,
 ){
     self.oracles.switchboard = if(new_switchboard.is_some()) option::some(new_switchboard.destroy_some().to_id()) else option::none();
 }
 
 public use fun add_price_from_switchboard as PriceSources.add_switchboard_price;
-public fun add_price_from_switchboard<CoinT>(
-    sources: &mut PriceSources<CoinT>,
-    oracle_aggregator: &OracleAggregator<CoinT>,
+public fun add_price_from_switchboard(
+    sources: &mut PriceSources,
+    coin_type: TypeName,
+    oracle_aggregator: &OracleAggregator,
     aggregator: &Aggregator,
 ){
     if (oracle_aggregator.oracles.switchboard.is_none()){
         sources.sources.insert(SUPRA_KEY,option::none());
     };
-    let current_price = switchboard_price_fetcher::fetch_price<CoinT>(aggregator, oracle_aggregator.price.decimals);
+    let current_price = switchboard_price_fetcher::fetch_price(coin_type, aggregator, oracle_aggregator.price.decimals);
     sources.sources.insert(SWITCHBOARD_KEY, current_price);
 }
 
 // ** Pyth **
-public(package) fun set_pyth<CoinT>(
-    self: &mut OracleAggregator<CoinT>,
+public(package) fun set_pyth(
+    self: &mut OracleAggregator,
     new_pyth: Option<address>,
 ){
     self.oracles.switchboard = if(new_pyth.is_some()) option::some(new_pyth.destroy_some().to_id()) else option::none();
 }
 
 public use fun add_price_from_pyth as PriceSources.add_pyth_price;
-public fun add_price_from_pyth<CoinT>(
-    sources: &mut PriceSources<CoinT>,
-    oracle_aggregator: &OracleAggregator<CoinT>,
+public fun add_price_from_pyth(
+    sources: &mut PriceSources,
+    coin_type: TypeName,
+    oracle_aggregator: &OracleAggregator,
     price_info_object: &PriceInfoObject,
     clock: &Clock,
     expected_price_identifier: PriceIdentifier,
@@ -220,28 +231,29 @@ public fun add_price_from_pyth<CoinT>(
     if (oracle_aggregator.oracles.pyth.is_none()){
         sources.sources.insert(SUPRA_KEY,option::none());
     };
-    let current_price = pyth_price_fetcher::fetch_price<CoinT>(price_info_object, clock, expected_price_identifier, oracle_aggregator.price.decimals, oracle_aggregator.tolerance_ms);
+    let current_price = pyth_price_fetcher::fetch_price(coin_type, price_info_object, clock, expected_price_identifier, oracle_aggregator.price.decimals, oracle_aggregator.tolerance_ms);
     sources.sources.insert(PYTH_KEY, current_price);
 }
 
 // ** Supra **
-public(package) fun set_supra<CoinT>(
-    self: &mut OracleAggregator<CoinT>,
+public(package) fun set_supra(
+    self: &mut OracleAggregator,
     new_supra: Option<u32>,
 ){
     self.oracles.supra = new_supra;
 }
 public use fun add_price_from_supra as PriceSources.add_supra_price;
-public fun add_price_from_supra<CoinT>(
-    sources: &mut PriceSources<CoinT>,
-    oracle_aggregator: &OracleAggregator<CoinT>,
+public fun add_price_from_supra(
+    sources: &mut PriceSources,
+    coin_type: TypeName,
+    oracle_aggregator: &OracleAggregator,
     supra_holder: &OracleHolder,
     pair_id: u32,
 ){
     if (oracle_aggregator.oracles.supra.is_none()){
         sources.sources.insert(SUPRA_KEY,option::none());
     };
-    let current_price = supra_price_fetcher::fetch_price<CoinT>(supra_holder, pair_id, oracle_aggregator.price.decimals);
+    let current_price = supra_price_fetcher::fetch_price(coin_type, supra_holder, pair_id, oracle_aggregator.price.decimals);
     
     let current_price = if (current_price.is_none()){
         option::none()
@@ -251,12 +263,12 @@ public fun add_price_from_supra<CoinT>(
     sources.sources.insert(SUPRA_KEY,current_price);
 }
 
-public fun update_price<CoinT>(
-    self: &mut OracleAggregator<CoinT>,
+public fun update_price(
+    self: &mut OracleAggregator,
     clock: &Clock,
-    sources: PriceSources<CoinT>
+    sources: PriceSources
 ){
-    let mut price_vec = vector::empty<CurrentPrice<CoinT>>();
+    let mut price_vec = vector::empty<CurrentPrice>();
     let current_timestamp = clock.timestamp_ms();
     let mut oracle_sources = sources.sources;
     
