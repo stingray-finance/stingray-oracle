@@ -51,7 +51,7 @@ public struct OracleAggregator has store {
     is_active: bool,
 }
 
-public struct PriceInfo has store{
+public struct PriceInfo has store, copy, drop{
     price: u64,
     decimals: u8,
 }
@@ -80,8 +80,20 @@ public fun new_price_sources(
 // === Public-View Functions ===
 public fun price_info(
     self: &OracleAggregator,
-):(u64, u8){
-    (self.price.price, self.price.decimals)
+):PriceInfo{
+    self.price
+}
+
+public fun price(
+    price_info: &PriceInfo,
+): u64{
+    price_info.price
+}
+
+public fun decimals(
+    price_info: &PriceInfo,
+): u8{
+    price_info.decimals
 }
 
 public fun oracle_amount(

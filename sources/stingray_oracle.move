@@ -12,7 +12,7 @@ use std::{
 };
 
 use stingray_oracle::{
-    oracle_aggregator::{ Self, OracleAggregator },
+    oracle_aggregator::{ Self, OracleAggregator, PriceInfo },
 };
 use switchboard::{
     aggregator::{ Aggregator },
@@ -53,7 +53,6 @@ public struct StingrayOracle has key{
 
 // === Init Functions ===
 fun init(ctx: &mut TxContext){
-    
     let (stingray_oracle, admin_cap) = new_oracle(ctx);
     transfer::share_object(stingray_oracle);
     transfer::public_transfer(admin_cap, ctx.sender());
@@ -239,7 +238,7 @@ public fun get_price(
     self: &StingrayOracle,
     clock: &Clock,
     coin_type: TypeName,
-): (u64, u8){
+): PriceInfo{
     let oracle_aggregator =self.borrow_oracle_aggregator(coin_type);
 
     if (clock.timestamp_ms() - oracle_aggregator.latest_update_ms() > oracle_aggregator.tolerance_ms()){
