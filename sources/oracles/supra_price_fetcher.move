@@ -8,11 +8,11 @@ use SupraOracle::{
 use stingray_oracle::{
     current_price::{Self, CurrentPrice},
 };
-use std::type_name::{ TypeName };
+use std::ascii::{ String };
  
 
 public fun fetch_price(
-    coin_type: TypeName,
+    coin_type: String,
     supra_holder: &OracleHolder,
     pair_id: u32,
     required_decimals: u8,

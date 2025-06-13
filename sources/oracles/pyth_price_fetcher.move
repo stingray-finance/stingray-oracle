@@ -2,7 +2,7 @@ module stingray_oracle::pyth_price_fetcher;
 
 // === Imports ===
 use std::{ 
-    type_name::{ TypeName},
+    ascii::{ String },
 };
 
 use sui::{
@@ -25,7 +25,7 @@ fun err_price_identifier_not_matched() { abort EPriceIdentifierNotMatched }
 // === Constants ===
 
 public fun fetch_price(
-    coin_type: TypeName,
+    coin_type: String,
     price_info_object: &PriceInfoObject,
     clock: &Clock,
     expected_price_identifier: PriceIdentifier,

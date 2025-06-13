@@ -3,6 +3,7 @@ module stingray_oracle::oracle_aggregator;
 // === Imports ===
 use std::{
     type_name::{ TypeName },
+    ascii::{ String },
 };
 
 use sui::{
@@ -43,7 +44,7 @@ const TOLERANCE_OF_PRICE_DIFF: u64 = 50;
 
 // === Structs ===
 public struct OracleAggregator has store {
-    coin_type: TypeName,
+    coin_type: String,
     price: PriceInfo,
     oracles: Oracles,
     latest_update_ms: u64,
@@ -63,7 +64,7 @@ public struct Oracles has store {
 }
 
 public struct PriceSources has copy, drop{
-    coin_type: TypeName,
+    coin_type: String,
     sources: VecMap<vector<u8>, Option<CurrentPrice>>,
 }
 
@@ -72,7 +73,7 @@ public fun new_price_sources(
     coin_type: TypeName,
 ): PriceSources{
     PriceSources{
-        coin_type,
+        coin_type: coin_type.into_string(),
         sources: vec_map::empty<vector<u8>, Option<CurrentPrice>>(),
     }
 }
@@ -153,7 +154,7 @@ public fun borrow_supra(
 
 // === Public-Package Functions ===
 public(package) fun new(
-    coin_type: TypeName,
+    coin_type: String,
     pyth: Option<address>,
     switchboard: Option<address>,
     supra: Option<u32>,
@@ -218,7 +219,7 @@ public fun add_price_from_switchboard(
     if (oracle_aggregator.oracles.switchboard.is_none()){
         sources.sources.insert(SUPRA_KEY,option::none());
     };
-    let current_price = switchboard_price_fetcher::fetch_price(coin_type, aggregator, oracle_aggregator.price.decimals);
+    let current_price = switchboard_price_fetcher::fetch_price(coin_type.into_string(), aggregator, oracle_aggregator.price.decimals);
     sources.sources.insert(SWITCHBOARD_KEY, current_price);
 }
 
@@ -243,7 +244,7 @@ public fun add_price_from_pyth(
     if (oracle_aggregator.oracles.pyth.is_none()){
         sources.sources.insert(SUPRA_KEY,option::none());
     };
-    let current_price = pyth_price_fetcher::fetch_price(coin_type, price_info_object, clock, expected_price_identifier, oracle_aggregator.price.decimals, oracle_aggregator.tolerance_ms);
+    let current_price = pyth_price_fetcher::fetch_price(coin_type.into_string(), price_info_object, clock, expected_price_identifier, oracle_aggregator.price.decimals, oracle_aggregator.tolerance_ms);
     sources.sources.insert(PYTH_KEY, current_price);
 }
 
@@ -265,7 +266,7 @@ public fun add_price_from_supra(
     if (oracle_aggregator.oracles.supra.is_none()){
         sources.sources.insert(SUPRA_KEY,option::none());
     };
-    let current_price = supra_price_fetcher::fetch_price(coin_type, supra_holder, pair_id, oracle_aggregator.price.decimals);
+    let current_price = supra_price_fetcher::fetch_price(coin_type.into_string(), supra_holder, pair_id, oracle_aggregator.price.decimals);
     
     let current_price = if (current_price.is_none()){
         option::none()

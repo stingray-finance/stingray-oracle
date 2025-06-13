@@ -9,14 +9,14 @@ use switchboard::{
 use stingray_oracle::{
     current_price::{Self, CurrentPrice},
 };
-use std::type_name::{ TypeName };
+use std::ascii::{ String };
 
 // === Errors ===
 
 //=== Public-Write Functions ===
 
 public fun fetch_price(
-    coin_type: TypeName,
+    coin_type: String,
     aggregator: &Aggregator,
     required_decimals: u8, 
 ): Option<CurrentPrice>{

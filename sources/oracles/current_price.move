@@ -1,9 +1,9 @@
 module stingray_oracle::current_price;
 
-use std::type_name::{ TypeName };
+use std::ascii::{ String };
 
 public struct CurrentPrice has copy, drop {
-    coin_type: TypeName,
+    coin_type: String,
     price: u64,
     decimals: u8,
     timestamp_ms: u64,
@@ -28,13 +28,13 @@ public fun timestamp_ms(
 }
 public fun coin_type(
     self: &CurrentPrice,
-): TypeName{
+): String{
     self.coin_type
 }
 
 // === Public-Package Function ===
 public(package) fun new_current_price(
-    coin_type: TypeName,
+    coin_type: String,
     price: u64,
     decimals: u8,
     timestamp_ms: u64
