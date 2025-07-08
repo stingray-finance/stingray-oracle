@@ -189,7 +189,7 @@ public fun borrow_oracle_aggregator_mut(
     oracle_aggregator
 }
 
-public fun update_price_from_switchboard<CoinT>(
+public fun update_price_by_switchboard<CoinT>(
     self: &mut StingrayOracle,
     aggregator: &Aggregator,
     clock: &Clock,
@@ -201,7 +201,7 @@ public fun update_price_from_switchboard<CoinT>(
     oracle_aggregator.update_price(clock, price_sources);
 }
 
-public fun update_price_from_pyth<CoinT>(
+public fun update_price_by_pyth<CoinT>(
     self: &mut StingrayOracle,
     price_info_object: &PriceInfoObject,
     clock: &Clock,
@@ -214,7 +214,7 @@ public fun update_price_from_pyth<CoinT>(
     oracle_aggregator.update_price(clock, price_sources);
 }
 
-public fun update_price_from_supra<CoinT>(
+public fun update_price_by_supra<CoinT>(
     self: &mut StingrayOracle,
     supra_holder: &OracleHolder,
     pair_id: u32,
@@ -276,3 +276,8 @@ fun new_oracle(
     (stingray_oracle, admin_cap)
 }
 
+// === Test Functions ===
+#[test_only]
+public fun testing_init(ctx: &mut TxContext){
+    init(ctx);
+}

@@ -35,6 +35,8 @@ const ESignificientPriceDiff: u64 = 0;
 fun err_significant_price_diff(){ abort ESignificientPriceDiff }
 const ENoValidPrice: u64 = 1;
 fun err_no_valid_price(){ abort ENoValidPrice }
+const EWrongSource: u64 = 2;
+fun err_wrong_source(){ abort EWrongSource }
 
 // === Constants ===
 const PYTH_KEY: vector<u8> = b"pyth";
@@ -217,7 +219,10 @@ public fun add_price_from_switchboard(
     aggregator: &Aggregator,
 ){
     if (oracle_aggregator.oracles.switchboard.is_none()){
-        sources.sources.insert(SUPRA_KEY,option::none());
+        sources.sources.insert(SWITCHBOARD_KEY,option::none());
+    };
+    if (oracle_aggregator.oracles.switchboard.borrow() == &object::id(aggregator)){
+        err_wrong_source();
     };
     let current_price = switchboard_price_fetcher::fetch_price(coin_type.into_string(), aggregator, oracle_aggregator.price.decimals);
     sources.sources.insert(SWITCHBOARD_KEY, current_price);
@@ -242,7 +247,10 @@ public fun add_price_from_pyth(
     
 ){
     if (oracle_aggregator.oracles.pyth.is_none()){
-        sources.sources.insert(SUPRA_KEY,option::none());
+        sources.sources.insert(PYTH_KEY,option::none());
+    };
+    if (oracle_aggregator.oracles.pyth.borrow() == &object::id(price_info_object)){
+        err_wrong_source();
     };
     let current_price = pyth_price_fetcher::fetch_price(coin_type.into_string(), price_info_object, clock, expected_price_identifier, oracle_aggregator.price.decimals, oracle_aggregator.tolerance_ms);
     sources.sources.insert(PYTH_KEY, current_price);
@@ -265,6 +273,9 @@ public fun add_price_from_supra(
 ){
     if (oracle_aggregator.oracles.supra.is_none()){
         sources.sources.insert(SUPRA_KEY,option::none());
+    };
+    if (oracle_aggregator.oracles.supra.borrow() == pair_id){
+        err_wrong_source();
     };
     let current_price = supra_price_fetcher::fetch_price(coin_type.into_string(), supra_holder, pair_id, oracle_aggregator.price.decimals);
     
@@ -346,7 +357,54 @@ public fun update_price(
 
     self.price.price = aggregator_price;
     self.latest_update_ms = current_timestamp;
-
 }
 
+// === Test Functions ===
+#[test_only]
+use std::{
+    type_name::{ Self,},
+};
+#[test_only]
+public fun testing_new_aggregator_oracle<CoinT>(
+    tolerance_ms: u64,
+): OracleAggregator{
+    let coin_type = type_name::get<CoinT>().into_string();
+    OracleAggregator{
+        coin_type, 
+        price: PriceInfo{
+            price: 0,
+            decimals: 6,
+        },
+        oracles: Oracles{
+            pyth: option::none(),
+            switchboard: option::none(),
+            supra: option::none(),
+        },
+        tolerance_ms,
+        latest_update_ms: 0,
+        is_active: false,
+    }
+}
+#[test_only]
+public fun testing_add_switchboard_price(
+    price_sources: &mut PriceSources,
+    current_price: Option<CurrentPrice>,
+){
+    price_sources.sources.insert(SWITCHBOARD_KEY, current_price);
+}
 
+#[test_only]
+public fun testing_add_pyth_price(
+    price_sources: &mut PriceSources,
+    current_price: Option<CurrentPrice>,
+){
+    price_sources.sources.insert(PYTH_KEY, current_price);
+}
+
+#[test_only]
+public fun testing_add_supra_price(
+    price_sources: &mut PriceSources,
+    current_price: Option<CurrentPrice>,
+){
+    price_sources.sources.insert(SUPRA_KEY, current_price);
+}
