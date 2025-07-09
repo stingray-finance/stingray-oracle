@@ -2,31 +2,18 @@
 
 [move]
 version = 3
-manifest_digest = "04E061A9F4078B2EBA9CEA868CDDA11008FA7483F651D1F32AE2BDA32A233F10"
-deps_digest = "CAFAD8A7CF51067FB4358215BECB86BD100DD64E57C2AC8A7AE7D74B688F5965"
+manifest_digest = "8A4AF4B1F2A5AB67932E20626BFA5B1F228AB5E3A88C8E9479E6D2C9F8ED77A7"
+deps_digest = "F9B494B64F0615AED0E98FC12A85B85ECD2BC5185C22D30E7F67786BB52E507C"
 dependencies = [
-  { id = "Bridge", name = "Bridge" },
-  { id = "MoveStdlib", name = "MoveStdlib" },
   { id = "Pyth", name = "Pyth" },
   { id = "Sui", name = "Sui" },
-  { id = "SuiSystem", name = "SuiSystem" },
   { id = "SupraOracle", name = "SupraOracle" },
   { id = "Switchboard", name = "Switchboard" },
 ]
 
 [[move.package]]
-id = "Bridge"
-source = { git = "https://github.com/MystenLabs/sui.git", rev = "2c930c25f8d3", subdir = "crates/sui-framework/packages/bridge" }
-
-dependencies = [
-  { id = "MoveStdlib", name = "MoveStdlib" },
-  { id = "Sui", name = "Sui" },
-  { id = "SuiSystem", name = "SuiSystem" },
-]
-
-[[move.package]]
 id = "MoveStdlib"
-source = { git = "https://github.com/MystenLabs/sui.git", rev = "2c930c25f8d3", subdir = "crates/sui-framework/packages/move-stdlib" }
+source = { git = "https://github.com/MystenLabs/sui.git", rev = "framework/mainnet", subdir = "crates/sui-framework/packages/move-stdlib" }
 
 [[move.package]]
 id = "Pyth"
@@ -39,24 +26,15 @@ dependencies = [
 
 [[move.package]]
 id = "Sui"
-source = { git = "https://github.com/MystenLabs/sui.git", rev = "2c930c25f8d3", subdir = "crates/sui-framework/packages/sui-framework" }
+source = { git = "https://github.com/MystenLabs/sui.git", rev = "framework/mainnet", subdir = "crates/sui-framework/packages/sui-framework" }
 
 dependencies = [
   { id = "MoveStdlib", name = "MoveStdlib" },
-]
-
-[[move.package]]
-id = "SuiSystem"
-source = { git = "https://github.com/MystenLabs/sui.git", rev = "2c930c25f8d3", subdir = "crates/sui-framework/packages/sui-system" }
-
-dependencies = [
-  { id = "MoveStdlib", name = "MoveStdlib" },
-  { id = "Sui", name = "Sui" },
 ]
 
 [[move.package]]
 id = "SupraOracle"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "master", subdir = "sui/mainnet/supra_holder" }
+source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_holder" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -81,7 +59,7 @@ dependencies = [
 
 [[move.package]]
 id = "supra_utils"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "master", subdir = "sui/mainnet/supra_utils" }
+source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_utils" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -89,7 +67,7 @@ dependencies = [
 
 [[move.package]]
 id = "supra_validator"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "master", subdir = "sui/mainnet/supra_validator" }
+source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_validator" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -100,3 +78,11 @@ dependencies = [
 compiler-version = "1.51.2"
 edition = "2024.beta"
 flavor = "sui"
+
+[env]
+
+[env.mainnet]
+chain-id = "35834a8a"
+original-published-id = "0xf5d7d73bd12b6dcd01d05d4907e2de0abf6eab74cd6ef984dec9d97f6b65e562"
+latest-published-id = "0xf5d7d73bd12b6dcd01d05d4907e2de0abf6eab74cd6ef984dec9d97f6b65e562"
+published-version = "1"

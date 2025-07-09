@@ -1,42 +1,18 @@
 [package]
 name = "StingrayOracle"
 edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
-# published-at = "0x34f4a45a18156ed696d17fe065b5daf3407d90edd802b1dadf2693a649049a9d"
-# license = ""           # e.g., "MIT", "GPL", "Apache 2.0"
-# authors = ["..."]      # e.g., ["Joe Smith (joesmith@noemail.com)", "John Snow (johnsnow@noemail.com)"]
 
 [dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/mainnet", override = true }
 Pyth = {git = "https://github.com/pyth-network/pyth-crosschain.git", subdir = "target_chains/sui/contracts", rev = "sui-contract-mainnet"}
-SupraOracle = {git = "https://github.com/Entropy-Foundation/dora-interface.git", subdir = "sui/mainnet/supra_holder", rev = "master"}
+SupraOracle = { git = "https://github.com/Entropy-Foundation/dora-interface.git", subdir = "sui/mainnet/supra_holder", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", override = true }
 Switchboard = {git = "https://github.com/switchboard-xyz/sui.git", subdir = "on_demand/", rev = "main"}
-# Pyth = { local = "../lib/pyth" }
-# SupraOracle = { local = "../lib/supra" }
 
-# For remote import, use the `{ git = "...", subdir = "...", rev = "..." }`.
-# Revision can be a branch, a tag, and a commit hash.
-# MyRemotePackage = { git = "https://some.remote/host.git", subdir = "remote/path", rev = "main" }
-
-# For local dependencies use `local = path`. Path is relative to the package root
-# Local = { local = "../path/to" }
-
-# To resolve a version 3conflict and force a specific version for dependency
-# override use `override = true`
-# Override = { local = "../conflicting/version", override = true }
 
 [addresses]
 stingray_oracle = "0x0"
 
-# Named addresses will be accessible in Move as `@name`. They're also exported:
-# for example, `std = "0x1"` is exported by the Standard Library.
-# alice = "0xA11CE"
-
 [dev-dependencies]
-# The dev-dependencies section allows overriding dependencies for `--test` and
-# `--dev` modes. You can introduce test-only dependencies here.
-# Local = { local = "../path/to/dev-build" }
 
 [dev-addresses]
-# The dev-addresses section allows overwriting named addresses for the `--test`
-# and `--dev` modes.
-# alice = "0xB0B"
 
