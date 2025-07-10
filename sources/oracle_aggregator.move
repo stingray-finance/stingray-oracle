@@ -17,7 +17,6 @@ use switchboard::{
 
 use pyth::{
     price_info::{ PriceInfoObject},
-    price_identifier::{ PriceIdentifier }, 
 };
 
 use stingray_oracle::{
@@ -221,7 +220,7 @@ public fun add_price_from_switchboard(
     if (oracle_aggregator.oracles.switchboard.is_none()){
         sources.sources.insert(SWITCHBOARD_KEY,option::none());
     };
-    if (oracle_aggregator.oracles.switchboard.borrow() == &object::id(aggregator)){
+    if (oracle_aggregator.oracles.switchboard.borrow() != &object::id(aggregator)){
         err_wrong_source();
     };
     let current_price = switchboard_price_fetcher::fetch_price(coin_type.into_string(), aggregator, oracle_aggregator.price.decimals);
@@ -243,16 +242,14 @@ public fun add_price_from_pyth(
     oracle_aggregator: &OracleAggregator,
     price_info_object: &PriceInfoObject,
     clock: &Clock,
-    expected_price_identifier: PriceIdentifier,
-    
 ){
     if (oracle_aggregator.oracles.pyth.is_none()){
         sources.sources.insert(PYTH_KEY,option::none());
     };
-    if (oracle_aggregator.oracles.pyth.borrow() == &object::id(price_info_object)){
+    if (oracle_aggregator.oracles.pyth.borrow() != &object::id(price_info_object)){
         err_wrong_source();
     };
-    let current_price = pyth_price_fetcher::fetch_price(coin_type.into_string(), price_info_object, clock, expected_price_identifier, oracle_aggregator.price.decimals, oracle_aggregator.tolerance_ms);
+    let current_price = pyth_price_fetcher::fetch_price(coin_type.into_string(), price_info_object, clock, oracle_aggregator.price.decimals, oracle_aggregator.tolerance_ms);
     sources.sources.insert(PYTH_KEY, current_price);
 }
 
@@ -274,16 +271,16 @@ public fun add_price_from_supra(
     if (oracle_aggregator.oracles.supra.is_none()){
         sources.sources.insert(SUPRA_KEY,option::none());
     };
-    if (oracle_aggregator.oracles.supra.borrow() == pair_id){
+    if (oracle_aggregator.oracles.supra.borrow() != &pair_id){
         err_wrong_source();
     };
     let current_price = supra_price_fetcher::fetch_price(coin_type.into_string(), supra_holder, pair_id, oracle_aggregator.price.decimals);
-    
     let current_price = if (current_price.is_none()){
         option::none()
     }else{
          option::some(current_price.destroy_some())
     };
+   
     sources.sources.insert(SUPRA_KEY,current_price);
 }
 
@@ -315,9 +312,9 @@ public fun update_price(
             };
         };
     };
-
+    
     if (oracle_sources.contains(&b"supra")){
-        let (_, supra_current_price) = oracle_sources.remove(&b"switchboard");
+        let (_, supra_current_price) = oracle_sources.remove(&b"supra");
         if (supra_current_price.is_some()){
             let supra_price_entity = supra_current_price.destroy_some();
             if ((current_timestamp - supra_price_entity.timestamp_ms()) <= self.tolerance_ms){

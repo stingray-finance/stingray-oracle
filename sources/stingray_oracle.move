@@ -20,7 +20,6 @@ use switchboard::{
 };
 use pyth::{
     price_info::{ PriceInfoObject },
-    price_identifier::{ PriceIdentifier },
 };
 use SupraOracle::{
     SupraSValueFeed::{ OracleHolder },
@@ -49,7 +48,7 @@ public struct AdminCap has key, store {
 public struct StingrayOracle has key{
     id: UID,
     versions: VecSet<u64>,
-    asset_types: VecSet<TypeName>,
+    asset_types: VecSet<String>, // type string
 }
 
 // === Init Functions ===
@@ -95,62 +94,61 @@ public fun new_oracle_aggregator<CoinT>(
     if (df::exists_(&self.id, key)){
         err_asset_already_existed();
     };
-    self.asset_types.insert(key);
-    df::add(&mut self.id, key, oracle_aggregator);
+    self.asset_types.insert(key.into_string());
+    df::add(&mut self.id, key.into_string(), oracle_aggregator);
 }
 
-public fun update_tolerance_ms(
+public fun update_tolerance_ms<CoinT>(
     self: &mut StingrayOracle,
     new_tolerance_ms: u64,
-    coin_type: String,
 ){
+    let coin_type = type_name::get<CoinT>().into_string();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
     oracle_aggregator.update_tolerance_ms(new_tolerance_ms);
 }
 
-public fun deactivate(
+public fun deactivate<CoinT>(
     self: &mut StingrayOracle,
-    coin_type: String,
 ){
-    let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
-    oracle_aggregator.active();
-}
-
-public fun activate(
-    self: &mut StingrayOracle,
-    coin_type: String,
-){
+    let coin_type = type_name::get<CoinT>().into_string();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
     oracle_aggregator.deactive();
 }
 
-public fun update_pyth(
+public fun activate<CoinT>(
+    self: &mut StingrayOracle,
+){
+    let coin_type = type_name::get<CoinT>().into_string();
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
+    oracle_aggregator.active();
+}
+
+public fun update_pyth<CoinT>(
     self: &mut StingrayOracle,
     _: &AdminCap,
     new_pyth: Option<address>,
-    coin_type: String,
 ){
+    let coin_type = type_name::get<CoinT>().into_string();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
     oracle_aggregator.set_pyth(new_pyth);
 }
 
-public fun update_switchboard(
+public fun update_switchboard<CoinT>(
     self: &mut StingrayOracle,
     _: &AdminCap,
     new_switchboard: Option<address>,
-    coin_type: String,
 ){
-    
+    let coin_type = type_name::get<CoinT>().into_string();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
     oracle_aggregator.set_switchboard(new_switchboard);
 }
 
-public fun update_supra(
+public fun update_supra<CoinT>(
     self: &mut StingrayOracle,
     _: &AdminCap,
     new_supra: Option<u32>,
-    coin_type: String,
 ){
+    let coin_type = type_name::get<CoinT>().into_string();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
     oracle_aggregator.set_supra(new_supra);
 }
@@ -166,9 +164,6 @@ public fun borrow_oracle_aggregator(
     
     let oracle_aggregator = df::borrow<String, OracleAggregator>(&self.id, coin_type);
     
-    if(!oracle_aggregator.is_active()){ 
-        err_oracle_aggregator_not_active();
-    };
     oracle_aggregator
 }
 
@@ -180,12 +175,8 @@ public fun borrow_oracle_aggregator_mut(
     if (!self.is_version_allowed()){
         err_version_not_allowed();
     };
-    
     let oracle_aggregator = df::borrow_mut<String, OracleAggregator>(&mut self.id, coin_type);
     
-    if(!oracle_aggregator.is_active()){ 
-        err_oracle_aggregator_not_active();
-    };
     oracle_aggregator
 }
 
@@ -205,12 +196,11 @@ public fun update_price_by_pyth<CoinT>(
     self: &mut StingrayOracle,
     price_info_object: &PriceInfoObject,
     clock: &Clock,
-    expected_price_identifier: PriceIdentifier,
 ){
     let coin_type = type_name::get<CoinT>();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type.into_string());
     let mut price_sources = oracle_aggregator::new_price_sources(coin_type);
-    price_sources.add_pyth_price(coin_type, oracle_aggregator, price_info_object, clock, expected_price_identifier);
+    price_sources.add_pyth_price(coin_type, oracle_aggregator, price_info_object, clock);
     oracle_aggregator.update_price(clock, price_sources);
 }
 
@@ -240,7 +230,12 @@ public fun get_price(
     clock: &Clock,
     coin_type: String,
 ): PriceInfo{
+    
     let oracle_aggregator =self.borrow_oracle_aggregator(coin_type);
+
+    if(!oracle_aggregator.is_active()){ 
+        err_oracle_aggregator_not_active();
+    };
 
     if (clock.timestamp_ms() - oracle_aggregator.latest_update_ms() > oracle_aggregator.tolerance_ms()){
         err_price_expired();
@@ -252,7 +247,7 @@ public fun is_price_supported(
     self: &StingrayOracle,
     coin_type: TypeName,
 ): bool{
-    if (self.asset_types.contains(&coin_type)){
+    if (self.asset_types.contains(&coin_type.into_string())){
         df::borrow<TypeName, OracleAggregator>(&self.id, coin_type).is_active()
     }else{
         false

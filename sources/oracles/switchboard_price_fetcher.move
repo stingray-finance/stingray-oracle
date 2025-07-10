@@ -23,7 +23,8 @@ public fun fetch_price(
     required_decimals: u8, 
 ): Option<CurrentPrice>{
     let current_result = aggregator.current_result();
-    let price = current_result.result().scale_to_decimals(required_decimals) as u64;
+    let price = (current_result.result().value() / (10u128.pow((current_result.result().dec() - required_decimals)))) as u64 ;
+    assert!(current_result.result().value() != 0u128, 1111);
     if (price == 0) return option::none();
 
     let timestamp = (current_result.timestamp_ms() as u64);
@@ -36,6 +37,9 @@ public fun fetch_price(
 use std::{
     type_name::{ Self,},
 };
+use switchboard::aggregator;
+use switchboard::decimal;
+use switchboard::decimal::DECIMALS;
 #[test_only]
 public fun testing_fetch_price<CoinT>(
     price: u64,

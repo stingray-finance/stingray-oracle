@@ -9,7 +9,6 @@ use sui::{
     clock::{ Clock },
 };
 use pyth::{
-    price_identifier::{ PriceIdentifier },
     price::{ Self },
     pyth::{ Self },
     price_info::{ PriceInfoObject },
@@ -28,26 +27,15 @@ public fun fetch_price(
     coin_type: String,
     price_info_object: &PriceInfoObject,
     clock: &Clock,
-    expected_price_identifier: PriceIdentifier,
     required_decimals: u8, 
     tolerance_ms: u64,
 ): Option<CurrentPrice>{
-    let price_struct = pyth::get_price_no_older_than(price_info_object, clock, tolerance_ms);
-
-    let price_info = price_info_object.get_price_info_from_price_info_object();
-    let price_identifier = price_info.get_price_identifier();
-    
-    if (price_identifier != expected_price_identifier){
-        err_price_identifier_not_matched();
-    };
+    let price_struct = pyth::get_price_no_older_than(price_info_object, clock, tolerance_ms);    
 
     let decimal_i64 = price::get_expo(&price_struct);
     let price_i64 = price::get_price(&price_struct);
     let timestamp_sec = price::get_timestamp(&price_struct);
-
-    if (i64::get_is_negative(&decimal_i64)) return option::none();
-    if (!i64::get_is_negative(&price_i64)) return option::none();
-
+   
     let decimal_u8 = (i64::get_magnitude_if_negative(&decimal_i64) as u8);
     let mut price = (i64::get_magnitude_if_positive(&price_i64));
 
