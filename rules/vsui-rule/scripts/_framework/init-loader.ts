@@ -1,0 +1,27 @@
+import * as package_source_0 from "../_dependencies/source/0x0/init";
+import * as package_source_1 from "../_dependencies/source/0x1/init";
+import * as package_source_1ee7b04f04ef049a6d711d0c0446d7b67b63c27c1397efa9536145085a4d1b7c from "../_dependencies/source/0x1ee7b04f04ef049a6d711d0c0446d7b67b63c27c1397efa9536145085a4d1b7c/init";
+import * as package_source_2 from "../_dependencies/source/0x2/init";
+import * as package_source_3 from "../_dependencies/source/0x3/init";
+import * as package_source_3a75968d0951fc99e7b336b26088d0f6888efd691b9cf2ac61c3958cfaa6d41b from "../_dependencies/source/0x3a75968d0951fc99e7b336b26088d0f6888efd691b9cf2ac61c3958cfaa6d41b/init";
+import * as package_source_5306f64e312b581766351c07af79c72fcb1cd25147157fdc2f8ad76de9a3fb6a from "../_dependencies/source/0x5306f64e312b581766351c07af79c72fcb1cd25147157fdc2f8ad76de9a3fb6a/init";
+import * as package_source_549e8b69270defbfafd4f94e17ec44cdbdd99820b33bda2278dea3b9a32d3f55 from "../_dependencies/source/0x549e8b69270defbfafd4f94e17ec44cdbdd99820b33bda2278dea3b9a32d3f55/init";
+import * as package_source_5d8fbbf6f908a4af8c6d072669a462d53e03eb3c1d863bd0359dc818c69ea706 from "../_dependencies/source/0x5d8fbbf6f908a4af8c6d072669a462d53e03eb3c1d863bd0359dc818c69ea706/init";
+import * as package_source_8d97f1cd6ac663735be08d1d2b6d02a159e711586461306ce60a2b7a6a565a9e from "../_dependencies/source/0x8d97f1cd6ac663735be08d1d2b6d02a159e711586461306ce60a2b7a6a565a9e/init";
+import * as package_source_c3c7e6eb7202e9fb0389a2f7542b91cc40e4f7a33c02554fec11c4c92f938ea3 from "../_dependencies/source/0xc3c7e6eb7202e9fb0389a2f7542b91cc40e4f7a33c02554fec11c4c92f938ea3/init";
+import {StructClassLoader} from "./loader";
+
+function registerClassesSource(loader: StructClassLoader) { package_source_0.registerClasses(loader);
+package_source_1.registerClasses(loader);
+package_source_2.registerClasses(loader);
+package_source_3.registerClasses(loader);
+package_source_1ee7b04f04ef049a6d711d0c0446d7b67b63c27c1397efa9536145085a4d1b7c.registerClasses(loader);
+package_source_3a75968d0951fc99e7b336b26088d0f6888efd691b9cf2ac61c3958cfaa6d41b.registerClasses(loader);
+package_source_5306f64e312b581766351c07af79c72fcb1cd25147157fdc2f8ad76de9a3fb6a.registerClasses(loader);
+package_source_549e8b69270defbfafd4f94e17ec44cdbdd99820b33bda2278dea3b9a32d3f55.registerClasses(loader);
+package_source_5d8fbbf6f908a4af8c6d072669a462d53e03eb3c1d863bd0359dc818c69ea706.registerClasses(loader);
+package_source_8d97f1cd6ac663735be08d1d2b6d02a159e711586461306ce60a2b7a6a565a9e.registerClasses(loader);
+package_source_c3c7e6eb7202e9fb0389a2f7542b91cc40e4f7a33c02554fec11c4c92f938ea3.registerClasses(loader);
+ }
+
+export function registerClasses(loader: StructClassLoader) { registerClassesSource(loader); }

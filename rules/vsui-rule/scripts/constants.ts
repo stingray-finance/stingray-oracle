@@ -1,0 +1,7 @@
+export const STINGRAY_ORACLE_PACKAGE = "0xae407da0a7721a991faab902372505c1cec368777086bfd4bc8202645a6cb9fd";
+
+export const STINGRAY_ORACLE = "0xb016b087cc1915bfdd7c006d0a7164eeb3d40afd8565f07219c009eee3f33e99";
+export const STAKE_POOL = "0x2d914e23d82fedef1b5f56a32d5c64bdcc3087ccfea2b4d6ea51a71f587840e5";
+export const METADATA = "0x680cd26af32b2bde8d3361e804c53ec1d1cfe24c7f039eb7f549e8dfde389a60";
+export const SUI_PAIR_ID = 90;
+export const SUPRA_ORACLE_HOLDER = "0xaa0315f0748c1f24ddb2b45f7939cff40f7a8104af5ccbc4a1d32f870c0b4105";
