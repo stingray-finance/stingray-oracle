@@ -1,6 +1,6 @@
 import {PhantomReified, Reified, StructClass, ToField, ToTypeStr, decodeFromFields, decodeFromFieldsWithTypes, decodeFromJSONField, phantom} from "../../../../_framework/reified";
 import {FieldsWithTypes, composeSuiType, compressSuiType} from "../../../../_framework/util";
-import {PKG_V35} from "../index";
+import {PKG_V36} from "../index";
 import {VecMap} from "../vec-map/structs";
 import {bcs} from "@mysten/sui/bcs";
 import {SuiClient, SuiObjectData, SuiParsedData} from "@mysten/sui/client";
@@ -8,7 +8,7 @@ import {fromB64, fromHEX, toHEX} from "@mysten/sui/utils";
 
 /* ============================== Party =============================== */
 
-export function isParty(type: string): boolean { type = compressSuiType(type); return type === `${PKG_V35}::party::Party`; }
+export function isParty(type: string): boolean { type = compressSuiType(type); return type === `${PKG_V36}::party::Party`; }
 
 export interface PartyFields { default: ToField<Permissions>; members: ToField<VecMap<"address", Permissions>> }
 
@@ -16,17 +16,17 @@ export type PartyReified = Reified< Party, PartyFields >;
 
 export class Party implements StructClass { __StructClass = true as const;
 
- static readonly $typeName = `${PKG_V35}::party::Party`; static readonly $numTypeParams = 0; static readonly $isPhantom = [] as const;
+ static readonly $typeName = `${PKG_V36}::party::Party`; static readonly $numTypeParams = 0; static readonly $isPhantom = [] as const;
 
- readonly $typeName = Party.$typeName; readonly $fullTypeName: `${typeof PKG_V35}::party::Party`; readonly $typeArgs: []; readonly $isPhantom = Party.$isPhantom;
+ readonly $typeName = Party.$typeName; readonly $fullTypeName: `${typeof PKG_V36}::party::Party`; readonly $typeArgs: []; readonly $isPhantom = Party.$isPhantom;
 
  readonly default: ToField<Permissions>; readonly members: ToField<VecMap<"address", Permissions>>
 
- private constructor(typeArgs: [], fields: PartyFields, ) { this.$fullTypeName = composeSuiType( Party.$typeName, ...typeArgs ) as `${typeof PKG_V35}::party::Party`; this.$typeArgs = typeArgs;
+ private constructor(typeArgs: [], fields: PartyFields, ) { this.$fullTypeName = composeSuiType( Party.$typeName, ...typeArgs ) as `${typeof PKG_V36}::party::Party`; this.$typeArgs = typeArgs;
 
  this.default = fields.default;; this.members = fields.members; }
 
- static reified( ): PartyReified { return { typeName: Party.$typeName, fullTypeName: composeSuiType( Party.$typeName, ...[] ) as `${typeof PKG_V35}::party::Party`, typeArgs: [ ] as [], isPhantom: Party.$isPhantom, reifiedTypeArgs: [], fromFields: (fields: Record<string, any>) => Party.fromFields( fields, ), fromFieldsWithTypes: (item: FieldsWithTypes) => Party.fromFieldsWithTypes( item, ), fromBcs: (data: Uint8Array) => Party.fromBcs( data, ), bcs: Party.bcs, fromJSONField: (field: any) => Party.fromJSONField( field, ), fromJSON: (json: Record<string, any>) => Party.fromJSON( json, ), fromSuiParsedData: (content: SuiParsedData) => Party.fromSuiParsedData( content, ), fromSuiObjectData: (content: SuiObjectData) => Party.fromSuiObjectData( content, ), fetch: async (client: SuiClient, id: string) => Party.fetch( client, id, ), new: ( fields: PartyFields, ) => { return new Party( [], fields ) }, kind: "StructClassReified", } }
+ static reified( ): PartyReified { return { typeName: Party.$typeName, fullTypeName: composeSuiType( Party.$typeName, ...[] ) as `${typeof PKG_V36}::party::Party`, typeArgs: [ ] as [], isPhantom: Party.$isPhantom, reifiedTypeArgs: [], fromFields: (fields: Record<string, any>) => Party.fromFields( fields, ), fromFieldsWithTypes: (item: FieldsWithTypes) => Party.fromFieldsWithTypes( item, ), fromBcs: (data: Uint8Array) => Party.fromBcs( data, ), bcs: Party.bcs, fromJSONField: (field: any) => Party.fromJSONField( field, ), fromJSON: (json: Record<string, any>) => Party.fromJSON( json, ), fromSuiParsedData: (content: SuiParsedData) => Party.fromSuiParsedData( content, ), fromSuiObjectData: (content: SuiObjectData) => Party.fromSuiObjectData( content, ), fetch: async (client: SuiClient, id: string) => Party.fetch( client, id, ), new: ( fields: PartyFields, ) => { return new Party( [], fields ) }, kind: "StructClassReified", } }
 
  static get r() { return Party.reified() }
 
@@ -76,7 +76,7 @@ export class Party implements StructClass { __StructClass = true as const;
 
 /* ============================== Permissions =============================== */
 
-export function isPermissions(type: string): boolean { type = compressSuiType(type); return type === `${PKG_V35}::party::Permissions`; }
+export function isPermissions(type: string): boolean { type = compressSuiType(type); return type === `${PKG_V36}::party::Permissions`; }
 
 export interface PermissionsFields { pos0: ToField<"u64"> }
 
@@ -84,17 +84,17 @@ export type PermissionsReified = Reified< Permissions, PermissionsFields >;
 
 export class Permissions implements StructClass { __StructClass = true as const;
 
- static readonly $typeName = `${PKG_V35}::party::Permissions`; static readonly $numTypeParams = 0; static readonly $isPhantom = [] as const;
+ static readonly $typeName = `${PKG_V36}::party::Permissions`; static readonly $numTypeParams = 0; static readonly $isPhantom = [] as const;
 
- readonly $typeName = Permissions.$typeName; readonly $fullTypeName: `${typeof PKG_V35}::party::Permissions`; readonly $typeArgs: []; readonly $isPhantom = Permissions.$isPhantom;
+ readonly $typeName = Permissions.$typeName; readonly $fullTypeName: `${typeof PKG_V36}::party::Permissions`; readonly $typeArgs: []; readonly $isPhantom = Permissions.$isPhantom;
 
  readonly pos0: ToField<"u64">
 
- private constructor(typeArgs: [], fields: PermissionsFields, ) { this.$fullTypeName = composeSuiType( Permissions.$typeName, ...typeArgs ) as `${typeof PKG_V35}::party::Permissions`; this.$typeArgs = typeArgs;
+ private constructor(typeArgs: [], fields: PermissionsFields, ) { this.$fullTypeName = composeSuiType( Permissions.$typeName, ...typeArgs ) as `${typeof PKG_V36}::party::Permissions`; this.$typeArgs = typeArgs;
 
  this.pos0 = fields.pos0; }
 
- static reified( ): PermissionsReified { return { typeName: Permissions.$typeName, fullTypeName: composeSuiType( Permissions.$typeName, ...[] ) as `${typeof PKG_V35}::party::Permissions`, typeArgs: [ ] as [], isPhantom: Permissions.$isPhantom, reifiedTypeArgs: [], fromFields: (fields: Record<string, any>) => Permissions.fromFields( fields, ), fromFieldsWithTypes: (item: FieldsWithTypes) => Permissions.fromFieldsWithTypes( item, ), fromBcs: (data: Uint8Array) => Permissions.fromBcs( data, ), bcs: Permissions.bcs, fromJSONField: (field: any) => Permissions.fromJSONField( field, ), fromJSON: (json: Record<string, any>) => Permissions.fromJSON( json, ), fromSuiParsedData: (content: SuiParsedData) => Permissions.fromSuiParsedData( content, ), fromSuiObjectData: (content: SuiObjectData) => Permissions.fromSuiObjectData( content, ), fetch: async (client: SuiClient, id: string) => Permissions.fetch( client, id, ), new: ( fields: PermissionsFields, ) => { return new Permissions( [], fields ) }, kind: "StructClassReified", } }
+ static reified( ): PermissionsReified { return { typeName: Permissions.$typeName, fullTypeName: composeSuiType( Permissions.$typeName, ...[] ) as `${typeof PKG_V36}::party::Permissions`, typeArgs: [ ] as [], isPhantom: Permissions.$isPhantom, reifiedTypeArgs: [], fromFields: (fields: Record<string, any>) => Permissions.fromFields( fields, ), fromFieldsWithTypes: (item: FieldsWithTypes) => Permissions.fromFieldsWithTypes( item, ), fromBcs: (data: Uint8Array) => Permissions.fromBcs( data, ), bcs: Permissions.bcs, fromJSONField: (field: any) => Permissions.fromJSONField( field, ), fromJSON: (json: Record<string, any>) => Permissions.fromJSON( json, ), fromSuiParsedData: (content: SuiParsedData) => Permissions.fromSuiParsedData( content, ), fromSuiObjectData: (content: SuiObjectData) => Permissions.fromSuiObjectData( content, ), fetch: async (client: SuiClient, id: string) => Permissions.fetch( client, id, ), new: ( fields: PermissionsFields, ) => { return new Permissions( [], fields ) }, kind: "StructClassReified", } }
 
  static get r() { return Permissions.reified() }
 

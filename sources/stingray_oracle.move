@@ -88,8 +88,9 @@ public fun new_oracle_aggregator<CoinT>(
     supra: Option<u32>,
     decimals: u8,
     tolerance_ms: u64,
+    ctx: &mut TxContext,
 ){
-    let oracle_aggregator = oracle_aggregator::new(type_name::get<CoinT>().into_string(), pyth, switchboard, supra, decimals, tolerance_ms);
+    let oracle_aggregator = oracle_aggregator::new(type_name::get<CoinT>().into_string(), pyth, switchboard, supra, decimals, tolerance_ms, ctx);
     let key = type_name::get<CoinT>();
     if (df::exists_(&self.id, key)){
         err_asset_already_existed();
@@ -215,6 +216,25 @@ public fun update_price_by_supra<CoinT>(
     let mut price_sources = oracle_aggregator::new_price_sources(coin_type);
     price_sources.add_supra_price(coin_type, oracle_aggregator, supra_holder, pair_id);
     oracle_aggregator.update_price(clock, price_sources);
+}
+
+// === Whitelist == 
+public fun add_rule<CoinT, RuleT: drop>(
+    self: &mut StingrayOracle,
+    _: &AdminCap,
+){
+    let coin_type = type_name::get<CoinT>().into_string();
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
+    oracle_aggregator.add_rule<RuleT>();
+}
+
+public fun remove_rule<CoinT, RuleT: drop>(
+    self: &mut StingrayOracle,
+    _: &AdminCap,
+){
+    let coin_type = type_name::get<CoinT>().into_string();
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
+    oracle_aggregator.remove_rule<RuleT>();
 }
 
 // === Public-View Functions ===

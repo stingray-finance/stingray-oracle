@@ -17,9 +17,7 @@ use pyth::{
 use stingray_oracle::{
     current_price::{ Self, CurrentPrice },
 };
-// === Errors ===
-const EPriceIdentifierNotMatched: u64 = 0;
-fun err_price_identifier_not_matched() { abort EPriceIdentifierNotMatched }
+
 
 // === Constants ===
 

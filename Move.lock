@@ -2,7 +2,7 @@
 
 [move]
 version = 3
-manifest_digest = "F2A00548E3D1F498FB22FB69D1523E7EA9C3E2FC24D1FF4AC81B091323FAB50D"
+manifest_digest = "E72283B52131F4D87400EAACBA256D1EE429733DDDDAECA7D5019B9E08B8FA12"
 deps_digest = "F9B494B64F0615AED0E98FC12A85B85ECD2BC5185C22D30E7F67786BB52E507C"
 dependencies = [
   { id = "Pyth", name = "Pyth" },
@@ -75,7 +75,7 @@ dependencies = [
 ]
 
 [move.toolchain-version]
-compiler-version = "1.51.2"
+compiler-version = "1.51.3"
 edition = "2024.beta"
 flavor = "sui"
 
@@ -83,6 +83,6 @@ flavor = "sui"
 
 [env.mainnet]
 chain-id = "35834a8a"
-original-published-id = "0x92cf5f16749791ccaa6023ad01891b156a3996369a3702eddce9daff840e1607"
-latest-published-id = "0x92cf5f16749791ccaa6023ad01891b156a3996369a3702eddce9daff840e1607"
+original-published-id = "0xae407da0a7721a991faab902372505c1cec368777086bfd4bc8202645a6cb9fd"
+latest-published-id = "0xae407da0a7721a991faab902372505c1cec368777086bfd4bc8202645a6cb9fd"
 published-version = "1"

@@ -1,6 +1,6 @@
-export const PACKAGE_ID = "0x92cf5f16749791ccaa6023ad01891b156a3996369a3702eddce9daff840e1607"; 
-export const PUBLISHED_AT = "0x92cf5f16749791ccaa6023ad01891b156a3996369a3702eddce9daff840e1607";
-export const PKG_V1 = "0x92cf5f16749791ccaa6023ad01891b156a3996369a3702eddce9daff840e1607";  
+export const PACKAGE_ID = "0xae407da0a7721a991faab902372505c1cec368777086bfd4bc8202645a6cb9fd"; 
+export const PUBLISHED_AT = "0xae407da0a7721a991faab902372505c1cec368777086bfd4bc8202645a6cb9fd";
+export const PKG_V1 = "0xae407da0a7721a991faab902372505c1cec368777086bfd4bc8202645a6cb9fd";  
 
 import { SuiClient, getFullnodeUrl } from "@mysten/sui/client";
 import { Transaction } from "@mysten/sui/transactions";
@@ -14,9 +14,12 @@ import {
     updatePriceBySwitchboard,
     activate,
     deactivate,
-    updateToleranceMs
+    updateToleranceMs,
+    addRule,
+    removeRule
 } from "./stingray-oracle/functions";
-import { ADMIN_CAP, STINGRAY_ORACLE, SUI_PAIR_ID, SUPRA_ORACLE_HOLDER, PYTH_SUI_PRICE_INFO_OBJECT, SWITCHBOARD_SUI_AGGREGATOR  } from "../constants";
+import { ADMIN_CAP, STINGRAY_ORACLE, SUI_PAIR_ID, SUPRA_ORACLE_HOLDER, PYTH_SUI_PRICE_INFO_OBJECT, SWITCHBOARD_SUI_AGGREGATOR, VSUI_RULE_PACKAGE_ID, VSUI_COIN_TYPE  } from "../constants";
+import { SUI_CLOCK_OBJECT_ID } from "@mysten/sui/utils";
 
 const client = new SuiClient({ url: getFullnodeUrl('mainnet') });
 const signer = Ed25519Keypair.fromSecretKey(process.env.PRIVATE_KEY!);
@@ -38,7 +41,7 @@ const getPriceInfo = async (tx: Transaction, coinType: string) => {
     
     getPrice(tx, {
         self: STINGRAY_ORACLE,
-        clock: "0x6", 
+        clock: SUI_CLOCK_OBJECT_ID, 
         coinType: coinType
     });
 };
@@ -47,7 +50,7 @@ const updatePriceWithPyth = async (tx: Transaction, coinType: string, priceInfoO
     updatePriceByPyth(tx, coinType, {
         self: STINGRAY_ORACLE,
         priceInfoObject: priceInfoObject,
-        clock: "0x6",
+        clock: SUI_CLOCK_OBJECT_ID,
     });
 };
 
@@ -57,7 +60,7 @@ const updatePriceWithSupra = async (tx: Transaction, coinType: string, supraHold
         self: STINGRAY_ORACLE,
         supraHolder: supraHolder,
         pairId: pairId,
-        clock: "0x6"
+        clock: SUI_CLOCK_OBJECT_ID
     });
 };
 
@@ -66,7 +69,7 @@ const updatePriceWithSwitchboard = async (tx: Transaction, coinType: string, agg
     updatePriceBySwitchboard(tx, coinType, {
         self: STINGRAY_ORACLE,
         aggregator: aggregator,
-        clock: "0x6"
+        clock: SUI_CLOCK_OBJECT_ID
     });
 };
 
@@ -87,6 +90,20 @@ const updateTolerance = async(tx: Transaction, coinType: string, tolerance_ms: b
     });
 }
 
+const addWhitelistRule = async(tx: Transaction, coinType: string, ruleType: string)=>{
+    addRule(tx, [coinType, ruleType], {
+        self: STINGRAY_ORACLE,
+        adminCap: ADMIN_CAP,
+    });
+}
+
+const removeWhitelistRule = async(tx: Transaction, coinType: string, ruleType: string)=>{
+    removeRule(tx, [ coinType, ruleType], {
+        self: STINGRAY_ORACLE, 
+        adminCap: ADMIN_CAP
+    });
+}
+
 
 const main = async () => {
     try {
@@ -97,10 +114,17 @@ const main = async () => {
         await createNewOracleAggregator(tx, coinType, PYTH_SUI_PRICE_INFO_OBJECT, SWITCHBOARD_SUI_AGGREGATOR, SUI_PAIR_ID);
         await updatePriceWithSupra(tx, coinType, SUPRA_ORACLE_HOLDER, SUI_PAIR_ID );
         await updatePriceWithPyth(tx, coinType, PYTH_SUI_PRICE_INFO_OBJECT, sui_price_id);
-        //await updatePriceWithSwitchboard(tx, coinType, SWITCHBOARD_SUI_AGGREGATOR);
+        // await updatePriceWithSwitchboard(tx, coinType, SWITCHBOARD_SUI_AGGREGATOR);
         await activateOracle(tx, coinType);
-        let new_tolerance: bigint = BigInt(10000000);
-        await updateTolerance(tx, coinType, new_tolerance);
+        // let new_tolerance: bigint = BigInt(10000000);
+        // await updateTolerance(tx, coinType, new_tolerance);
+        
+        const vsuiRuleType = `${VSUI_RULE_PACKAGE_ID}::vsui_rule::Rule`;
+        await createNewOracleAggregator(tx, VSUI_COIN_TYPE, null, null, null);
+        await activateOracle(tx, VSUI_COIN_TYPE);
+        await addWhitelistRule(tx, VSUI_COIN_TYPE, vsuiRuleType);
+        // await removeWhitelistRule(tx, VSUI_COIN_TYPE, VSUI_COIN_TYPE);
+        // await addWhitelistRule(tx, VSUI_COIN_TYPE, VSUI_COIN_TYPE);
 
         let digest = await client.signAndExecuteTransaction({
             transaction: tx,

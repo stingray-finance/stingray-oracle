@@ -10,6 +10,14 @@ export function getPrice( tx: Transaction, args: GetPriceArgs ) { return tx.move
 
 export function init( tx: Transaction, ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::init`, arguments: [ ], }) }
 
+export interface AddRuleArgs { self: TransactionObjectInput; adminCap: TransactionObjectInput }
+
+export function addRule( tx: Transaction, typeArgs: [string, string], args: AddRuleArgs ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::add_rule`, typeArguments: typeArgs, arguments: [ obj(tx, args.self), obj(tx, args.adminCap) ], }) }
+
+export interface RemoveRuleArgs { self: TransactionObjectInput; adminCap: TransactionObjectInput }
+
+export function removeRule( tx: Transaction, typeArgs: [string, string], args: RemoveRuleArgs ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::remove_rule`, typeArguments: typeArgs, arguments: [ obj(tx, args.self), obj(tx, args.adminCap) ], }) }
+
 export interface UpdateToleranceMsArgs { self: TransactionObjectInput; newToleranceMs: bigint | TransactionArgument }
 
 export function updateToleranceMs( tx: Transaction, typeArg: string, args: UpdateToleranceMsArgs ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::update_tolerance_ms`, typeArguments: [typeArg], arguments: [ obj(tx, args.self), pure(tx, args.newToleranceMs, `u64`) ], }) }

@@ -8,6 +8,7 @@ loader.register(oracleAggregator.PriceInfo);
 loader.register(oracleAggregator.OracleAggregator);
 loader.register(oracleAggregator.Oracles);
 loader.register(oracleAggregator.PriceSources);
+loader.register(oracleAggregator.WhitelistRule);
 loader.register(stingrayOracle.AdminCap);
 loader.register(stingrayOracle.StingrayOracle);
  }

@@ -9,6 +9,7 @@ use std::{
 use sui::{
     clock::{ Clock },
     vec_map::{ Self, VecMap },
+    dynamic_field::{ Self as df },
 };
 
 use switchboard::{
@@ -36,6 +37,8 @@ const ENoValidPrice: u64 = 1;
 fun err_no_valid_price(){ abort ENoValidPrice }
 const EWrongSource: u64 = 2;
 fun err_wrong_source(){ abort EWrongSource }
+const ERuleNotSupported: u64 = 3;
+fun err_rule_not_supported(){ abort ERuleNotSupported }
 
 // === Constants ===
 const PYTH_KEY: vector<u8> = b"pyth";
@@ -44,7 +47,8 @@ const SUPRA_KEY: vector<u8> = b"supra";
 const TOLERANCE_OF_PRICE_DIFF: u64 = 50;
 
 // === Structs ===
-public struct OracleAggregator has store {
+public struct OracleAggregator has key, store {
+    id: UID,
     coin_type: String,
     price: PriceInfo,
     oracles: Oracles,
@@ -68,6 +72,8 @@ public struct PriceSources has copy, drop{
     coin_type: String,
     sources: VecMap<vector<u8>, Option<CurrentPrice>>,
 }
+
+public struct WhitelistRule<phantom R: drop> has store, copy, drop {}
 
 // === Public-Write Functions ===
 public fun new_price_sources(
@@ -161,10 +167,12 @@ public(package) fun new(
     supra: Option<u32>,
     decimals: u8,
     tolerance_ms: u64,
+    ctx: &mut TxContext,
 ): OracleAggregator{
     let pyth_config = if (pyth.is_some()) option::some(pyth.destroy_some().to_id()) else option::none();
     let switchboard_config = if (switchboard.is_some()) option::some(switchboard.destroy_some().to_id()) else option::none();
     OracleAggregator{
+        id: object::new(ctx),
         coin_type, 
         price: PriceInfo{
             price: 0,
@@ -356,6 +364,36 @@ public fun update_price(
     self.latest_update_ms = current_timestamp;
 }
 
+// === Whitelist === 
+public fun update_oracle_price_with_rule<RuleT: drop>(
+    self: &mut OracleAggregator,
+    _: RuleT,
+    clock: &Clock,
+    price: u64,
+) {
+    if (!df::exists_(&self.id, WhitelistRule<RuleT>{})){
+        err_rule_not_supported();
+    };
+    self.price.price = price;
+    let current_time = clock.timestamp_ms();
+    self.latest_update_ms = current_time;
+}
+
+public(package) fun add_rule<RuleT: drop>(
+    oracle_aggregator: &mut OracleAggregator,
+) {
+    df::add(
+        &mut oracle_aggregator.id, WhitelistRule<RuleT> {}, true,
+    );
+}
+
+public(package) fun remove_rule<RuleT: drop>(
+    oracle_aggregator: &mut OracleAggregator,
+) {
+    df::remove<WhitelistRule<RuleT>, bool>(
+        &mut oracle_aggregator.id, WhitelistRule<RuleT> {},
+    );
+}
 // === Test Functions ===
 #[test_only]
 use std::{
@@ -364,9 +402,11 @@ use std::{
 #[test_only]
 public fun testing_new_aggregator_oracle<CoinT>(
     tolerance_ms: u64,
+    ctx: &mut TxContext
 ): OracleAggregator{
     let coin_type = type_name::get<CoinT>().into_string();
     OracleAggregator{
+        id: object::new(ctx),
         coin_type, 
         price: PriceInfo{
             price: 0,

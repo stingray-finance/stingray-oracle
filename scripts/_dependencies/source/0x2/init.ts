@@ -1,3 +1,4 @@
+import * as accumulator from "./accumulator/structs";
 import * as authenticatorState from "./authenticator-state/structs";
 import * as bag from "./bag/structs";
 import * as balance from "./balance/structs";
@@ -79,6 +80,7 @@ loader.register(package_.Publisher);
 loader.register(package_.UpgradeCap);
 loader.register(package_.UpgradeReceipt);
 loader.register(package_.UpgradeTicket);
+loader.register(accumulator.AccumulatorRoot);
 loader.register(authenticatorState.ActiveJwk);
 loader.register(authenticatorState.AuthenticatorState);
 loader.register(authenticatorState.AuthenticatorStateInner);

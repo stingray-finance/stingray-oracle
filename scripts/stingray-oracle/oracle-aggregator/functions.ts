@@ -1,7 +1,7 @@
 import {PUBLISHED_AT} from "..";
 import {String} from "../../_dependencies/source/0x1/ascii/structs";
 import {Option} from "../../_dependencies/source/0x1/option/structs";
-import {obj, pure} from "../../_framework/util";
+import {GenericArg, generic, obj, pure} from "../../_framework/util";
 import {Transaction, TransactionArgument, TransactionObjectInput} from "@mysten/sui/transactions";
 
 export function decimals( tx: Transaction, priceInfo: TransactionObjectInput ) { return tx.moveCall({ target: `${PUBLISHED_AT}::oracle_aggregator::decimals`, arguments: [ obj(tx, priceInfo) ], }) }
@@ -32,6 +32,8 @@ export interface AddPriceFromSwitchboardArgs { sources: TransactionObjectInput; 
 
 export function addPriceFromSwitchboard( tx: Transaction, args: AddPriceFromSwitchboardArgs ) { return tx.moveCall({ target: `${PUBLISHED_AT}::oracle_aggregator::add_price_from_switchboard`, arguments: [ obj(tx, args.sources), obj(tx, args.coinType), obj(tx, args.oracleAggregator), obj(tx, args.aggregator) ], }) }
 
+export function addRule( tx: Transaction, typeArg: string, oracleAggregator: TransactionObjectInput ) { return tx.moveCall({ target: `${PUBLISHED_AT}::oracle_aggregator::add_rule`, typeArguments: [typeArg], arguments: [ obj(tx, oracleAggregator) ], }) }
+
 export function borrowPyth( tx: Transaction, self: TransactionObjectInput ) { return tx.moveCall({ target: `${PUBLISHED_AT}::oracle_aggregator::borrow_pyth`, arguments: [ obj(tx, self) ], }) }
 
 export function borrowSupra( tx: Transaction, self: TransactionObjectInput ) { return tx.moveCall({ target: `${PUBLISHED_AT}::oracle_aggregator::borrow_supra`, arguments: [ obj(tx, self) ], }) }
@@ -42,6 +44,8 @@ export function deactivateAggregator( tx: Transaction, self: TransactionObjectIn
 
 export function errNoValidPrice( tx: Transaction, ) { return tx.moveCall({ target: `${PUBLISHED_AT}::oracle_aggregator::err_no_valid_price`, arguments: [ ], }) }
 
+export function errRuleNotSupported( tx: Transaction, ) { return tx.moveCall({ target: `${PUBLISHED_AT}::oracle_aggregator::err_rule_not_supported`, arguments: [ ], }) }
+
 export function errSignificantPriceDiff( tx: Transaction, ) { return tx.moveCall({ target: `${PUBLISHED_AT}::oracle_aggregator::err_significant_price_diff`, arguments: [ ], }) }
 
 export function errWrongSource( tx: Transaction, ) { return tx.moveCall({ target: `${PUBLISHED_AT}::oracle_aggregator::err_wrong_source`, arguments: [ ], }) }
@@ -51,6 +55,8 @@ export function latestUpdateMs( tx: Transaction, self: TransactionObjectInput ) 
 export function newPriceSources( tx: Transaction, coinType: TransactionObjectInput ) { return tx.moveCall({ target: `${PUBLISHED_AT}::oracle_aggregator::new_price_sources`, arguments: [ obj(tx, coinType) ], }) }
 
 export function oracleAmount( tx: Transaction, self: TransactionObjectInput ) { return tx.moveCall({ target: `${PUBLISHED_AT}::oracle_aggregator::oracle_amount`, arguments: [ obj(tx, self) ], }) }
+
+export function removeRule( tx: Transaction, typeArg: string, oracleAggregator: TransactionObjectInput ) { return tx.moveCall({ target: `${PUBLISHED_AT}::oracle_aggregator::remove_rule`, typeArguments: [typeArg], arguments: [ obj(tx, oracleAggregator) ], }) }
 
 export interface SetPythArgs { self: TransactionObjectInput; newPyth: (string | TransactionArgument | TransactionArgument | null) }
 
@@ -63,6 +69,10 @@ export function setSupra( tx: Transaction, args: SetSupraArgs ) { return tx.move
 export interface SetSwitchboardArgs { self: TransactionObjectInput; newSwitchboard: (string | TransactionArgument | TransactionArgument | null) }
 
 export function setSwitchboard( tx: Transaction, args: SetSwitchboardArgs ) { return tx.moveCall({ target: `${PUBLISHED_AT}::oracle_aggregator::set_switchboard`, arguments: [ obj(tx, args.self), pure(tx, args.newSwitchboard, `${Option.$typeName}<address>`) ], }) }
+
+export interface UpdateOraclePriceWithRuleArgs { self: TransactionObjectInput; ruleT: GenericArg; clock: TransactionObjectInput; price: bigint | TransactionArgument }
+
+export function updateOraclePriceWithRule( tx: Transaction, typeArg: string, args: UpdateOraclePriceWithRuleArgs ) { return tx.moveCall({ target: `${PUBLISHED_AT}::oracle_aggregator::update_oracle_price_with_rule`, typeArguments: [typeArg], arguments: [ obj(tx, args.self), generic(tx, `${typeArg}`, args.ruleT), obj(tx, args.clock), pure(tx, args.price, `u64`) ], }) }
 
 export interface UpdatePriceArgs { self: TransactionObjectInput; clock: TransactionObjectInput; sources: TransactionObjectInput }
 

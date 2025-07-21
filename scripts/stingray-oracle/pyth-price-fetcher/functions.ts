@@ -6,5 +6,3 @@ import {Transaction, TransactionArgument, TransactionObjectInput} from "@mysten/
 export interface FetchPriceArgs { coinType: string | TransactionArgument; priceInfoObject: TransactionObjectInput; clock: TransactionObjectInput; requiredDecimals: number | TransactionArgument; toleranceMs: bigint | TransactionArgument }
 
 export function fetchPrice( tx: Transaction, args: FetchPriceArgs ) { return tx.moveCall({ target: `${PUBLISHED_AT}::pyth_price_fetcher::fetch_price`, arguments: [ pure(tx, args.coinType, `${String.$typeName}`), obj(tx, args.priceInfoObject), obj(tx, args.clock), pure(tx, args.requiredDecimals, `u8`), pure(tx, args.toleranceMs, `u64`) ], }) }
-
-export function errPriceIdentifierNotMatched( tx: Transaction, ) { return tx.moveCall({ target: `${PUBLISHED_AT}::pyth_price_fetcher::err_price_identifier_not_matched`, arguments: [ ], }) }

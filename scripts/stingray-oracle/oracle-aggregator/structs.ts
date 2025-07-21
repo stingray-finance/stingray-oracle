@@ -1,10 +1,10 @@
 import * as reified from "../../_framework/reified";
 import {String} from "../../_dependencies/source/0x1/ascii/structs";
 import {Option} from "../../_dependencies/source/0x1/option/structs";
-import {ID} from "../../_dependencies/source/0x2/object/structs";
+import {ID, UID} from "../../_dependencies/source/0x2/object/structs";
 import {VecMap} from "../../_dependencies/source/0x2/vec-map/structs";
-import {PhantomReified, Reified, StructClass, ToField, ToTypeStr, decodeFromFields, decodeFromFieldsWithTypes, decodeFromJSONField, fieldToJSON, phantom} from "../../_framework/reified";
-import {FieldsWithTypes, composeSuiType, compressSuiType} from "../../_framework/util";
+import {PhantomReified, PhantomToTypeStr, PhantomTypeArgument, Reified, StructClass, ToField, ToPhantomTypeArgument, ToTypeStr, assertFieldsWithTypesArgsMatch, assertReifiedTypeArgsMatch, decodeFromFields, decodeFromFieldsWithTypes, decodeFromJSONField, extractType, fieldToJSON, phantom} from "../../_framework/reified";
+import {FieldsWithTypes, composeSuiType, compressSuiType, parseTypeName} from "../../_framework/util";
 import {Vector} from "../../_framework/vector";
 import {CurrentPrice} from "../current-price/structs";
 import {PKG_V1} from "../index";
@@ -84,7 +84,7 @@ export class PriceInfo implements StructClass { __StructClass = true as const;
 
 export function isOracleAggregator(type: string): boolean { type = compressSuiType(type); return type === `${PKG_V1}::oracle_aggregator::OracleAggregator`; }
 
-export interface OracleAggregatorFields { coinType: ToField<String>; price: ToField<PriceInfo>; oracles: ToField<Oracles>; latestUpdateMs: ToField<"u64">; toleranceMs: ToField<"u64">; isActive: ToField<"bool"> }
+export interface OracleAggregatorFields { id: ToField<UID>; coinType: ToField<String>; price: ToField<PriceInfo>; oracles: ToField<Oracles>; latestUpdateMs: ToField<"u64">; toleranceMs: ToField<"u64">; isActive: ToField<"bool"> }
 
 export type OracleAggregatorReified = Reified< OracleAggregator, OracleAggregatorFields >;
 
@@ -94,11 +94,11 @@ export class OracleAggregator implements StructClass { __StructClass = true as c
 
  readonly $typeName = OracleAggregator.$typeName; readonly $fullTypeName: `${typeof PKG_V1}::oracle_aggregator::OracleAggregator`; readonly $typeArgs: []; readonly $isPhantom = OracleAggregator.$isPhantom;
 
- readonly coinType: ToField<String>; readonly price: ToField<PriceInfo>; readonly oracles: ToField<Oracles>; readonly latestUpdateMs: ToField<"u64">; readonly toleranceMs: ToField<"u64">; readonly isActive: ToField<"bool">
+ readonly id: ToField<UID>; readonly coinType: ToField<String>; readonly price: ToField<PriceInfo>; readonly oracles: ToField<Oracles>; readonly latestUpdateMs: ToField<"u64">; readonly toleranceMs: ToField<"u64">; readonly isActive: ToField<"bool">
 
  private constructor(typeArgs: [], fields: OracleAggregatorFields, ) { this.$fullTypeName = composeSuiType( OracleAggregator.$typeName, ...typeArgs ) as `${typeof PKG_V1}::oracle_aggregator::OracleAggregator`; this.$typeArgs = typeArgs;
 
- this.coinType = fields.coinType;; this.price = fields.price;; this.oracles = fields.oracles;; this.latestUpdateMs = fields.latestUpdateMs;; this.toleranceMs = fields.toleranceMs;; this.isActive = fields.isActive; }
+ this.id = fields.id;; this.coinType = fields.coinType;; this.price = fields.price;; this.oracles = fields.oracles;; this.latestUpdateMs = fields.latestUpdateMs;; this.toleranceMs = fields.toleranceMs;; this.isActive = fields.isActive; }
 
  static reified( ): OracleAggregatorReified { return { typeName: OracleAggregator.$typeName, fullTypeName: composeSuiType( OracleAggregator.$typeName, ...[] ) as `${typeof PKG_V1}::oracle_aggregator::OracleAggregator`, typeArgs: [ ] as [], isPhantom: OracleAggregator.$isPhantom, reifiedTypeArgs: [], fromFields: (fields: Record<string, any>) => OracleAggregator.fromFields( fields, ), fromFieldsWithTypes: (item: FieldsWithTypes) => OracleAggregator.fromFieldsWithTypes( item, ), fromBcs: (data: Uint8Array) => OracleAggregator.fromBcs( data, ), bcs: OracleAggregator.bcs, fromJSONField: (field: any) => OracleAggregator.fromJSONField( field, ), fromJSON: (json: Record<string, any>) => OracleAggregator.fromJSON( json, ), fromSuiParsedData: (content: SuiParsedData) => OracleAggregator.fromSuiParsedData( content, ), fromSuiObjectData: (content: SuiObjectData) => OracleAggregator.fromSuiObjectData( content, ), fetch: async (client: SuiClient, id: string) => OracleAggregator.fetch( client, id, ), new: ( fields: OracleAggregatorFields, ) => { return new OracleAggregator( [], fields ) }, kind: "StructClassReified", } }
 
@@ -108,29 +108,29 @@ export class OracleAggregator implements StructClass { __StructClass = true as c
 
  static get bcs() { return bcs.struct("OracleAggregator", {
 
- coin_type: String.bcs, price: PriceInfo.bcs, oracles: Oracles.bcs, latest_update_ms: bcs.u64(), tolerance_ms: bcs.u64(), is_active: bcs.bool()
+ id: UID.bcs, coin_type: String.bcs, price: PriceInfo.bcs, oracles: Oracles.bcs, latest_update_ms: bcs.u64(), tolerance_ms: bcs.u64(), is_active: bcs.bool()
 
 }) };
 
- static fromFields( fields: Record<string, any> ): OracleAggregator { return OracleAggregator.reified( ).new( { coinType: decodeFromFields(String.reified(), fields.coin_type), price: decodeFromFields(PriceInfo.reified(), fields.price), oracles: decodeFromFields(Oracles.reified(), fields.oracles), latestUpdateMs: decodeFromFields("u64", fields.latest_update_ms), toleranceMs: decodeFromFields("u64", fields.tolerance_ms), isActive: decodeFromFields("bool", fields.is_active) } ) }
+ static fromFields( fields: Record<string, any> ): OracleAggregator { return OracleAggregator.reified( ).new( { id: decodeFromFields(UID.reified(), fields.id), coinType: decodeFromFields(String.reified(), fields.coin_type), price: decodeFromFields(PriceInfo.reified(), fields.price), oracles: decodeFromFields(Oracles.reified(), fields.oracles), latestUpdateMs: decodeFromFields("u64", fields.latest_update_ms), toleranceMs: decodeFromFields("u64", fields.tolerance_ms), isActive: decodeFromFields("bool", fields.is_active) } ) }
 
  static fromFieldsWithTypes( item: FieldsWithTypes ): OracleAggregator { if (!isOracleAggregator(item.type)) { throw new Error("not a OracleAggregator type");
 
  }
 
- return OracleAggregator.reified( ).new( { coinType: decodeFromFieldsWithTypes(String.reified(), item.fields.coin_type), price: decodeFromFieldsWithTypes(PriceInfo.reified(), item.fields.price), oracles: decodeFromFieldsWithTypes(Oracles.reified(), item.fields.oracles), latestUpdateMs: decodeFromFieldsWithTypes("u64", item.fields.latest_update_ms), toleranceMs: decodeFromFieldsWithTypes("u64", item.fields.tolerance_ms), isActive: decodeFromFieldsWithTypes("bool", item.fields.is_active) } ) }
+ return OracleAggregator.reified( ).new( { id: decodeFromFieldsWithTypes(UID.reified(), item.fields.id), coinType: decodeFromFieldsWithTypes(String.reified(), item.fields.coin_type), price: decodeFromFieldsWithTypes(PriceInfo.reified(), item.fields.price), oracles: decodeFromFieldsWithTypes(Oracles.reified(), item.fields.oracles), latestUpdateMs: decodeFromFieldsWithTypes("u64", item.fields.latest_update_ms), toleranceMs: decodeFromFieldsWithTypes("u64", item.fields.tolerance_ms), isActive: decodeFromFieldsWithTypes("bool", item.fields.is_active) } ) }
 
  static fromBcs( data: Uint8Array ): OracleAggregator { return OracleAggregator.fromFields( OracleAggregator.bcs.parse(data) ) }
 
  toJSONField() { return {
 
- coinType: this.coinType,price: this.price.toJSONField(),oracles: this.oracles.toJSONField(),latestUpdateMs: this.latestUpdateMs.toString(),toleranceMs: this.toleranceMs.toString(),isActive: this.isActive,
+ id: this.id,coinType: this.coinType,price: this.price.toJSONField(),oracles: this.oracles.toJSONField(),latestUpdateMs: this.latestUpdateMs.toString(),toleranceMs: this.toleranceMs.toString(),isActive: this.isActive,
 
 } }
 
  toJSON() { return { $typeName: this.$typeName, $typeArgs: this.$typeArgs, ...this.toJSONField() } }
 
- static fromJSONField( field: any ): OracleAggregator { return OracleAggregator.reified( ).new( { coinType: decodeFromJSONField(String.reified(), field.coinType), price: decodeFromJSONField(PriceInfo.reified(), field.price), oracles: decodeFromJSONField(Oracles.reified(), field.oracles), latestUpdateMs: decodeFromJSONField("u64", field.latestUpdateMs), toleranceMs: decodeFromJSONField("u64", field.toleranceMs), isActive: decodeFromJSONField("bool", field.isActive) } ) }
+ static fromJSONField( field: any ): OracleAggregator { return OracleAggregator.reified( ).new( { id: decodeFromJSONField(UID.reified(), field.id), coinType: decodeFromJSONField(String.reified(), field.coinType), price: decodeFromJSONField(PriceInfo.reified(), field.price), oracles: decodeFromJSONField(Oracles.reified(), field.oracles), latestUpdateMs: decodeFromJSONField("u64", field.latestUpdateMs), toleranceMs: decodeFromJSONField("u64", field.toleranceMs), isActive: decodeFromJSONField("bool", field.isActive) } ) }
 
  static fromJSON( json: Record<string, any> ): OracleAggregator { if (json.$typeName !== OracleAggregator.$typeName) { throw new Error("not a WithTwoGenerics json object") };
 
@@ -281,5 +281,75 @@ export class PriceSources implements StructClass { __StructClass = true as const
  static async fetch( client: SuiClient, id: string ): Promise<PriceSources> { const res = await client.getObject({ id, options: { showBcs: true, }, }); if (res.error) { throw new Error(`error fetching PriceSources object at id ${id}: ${res.error.code}`); } if (res.data?.bcs?.dataType !== "moveObject" || !isPriceSources(res.data.bcs.type)) { throw new Error(`object at id ${id} is not a PriceSources object`); }
 
  return PriceSources.fromSuiObjectData( res.data ); }
+
+ }
+
+/* ============================== WhitelistRule =============================== */
+
+export function isWhitelistRule(type: string): boolean { type = compressSuiType(type); return type.startsWith(`${PKG_V1}::oracle_aggregator::WhitelistRule` + '<'); }
+
+export interface WhitelistRuleFields<R extends PhantomTypeArgument> { dummyField: ToField<"bool"> }
+
+export type WhitelistRuleReified<R extends PhantomTypeArgument> = Reified< WhitelistRule<R>, WhitelistRuleFields<R> >;
+
+export class WhitelistRule<R extends PhantomTypeArgument> implements StructClass { __StructClass = true as const;
+
+ static readonly $typeName = `${PKG_V1}::oracle_aggregator::WhitelistRule`; static readonly $numTypeParams = 1; static readonly $isPhantom = [true,] as const;
+
+ readonly $typeName = WhitelistRule.$typeName; readonly $fullTypeName: `${typeof PKG_V1}::oracle_aggregator::WhitelistRule<${PhantomToTypeStr<R>}>`; readonly $typeArgs: [PhantomToTypeStr<R>]; readonly $isPhantom = WhitelistRule.$isPhantom;
+
+ readonly dummyField: ToField<"bool">
+
+ private constructor(typeArgs: [PhantomToTypeStr<R>], fields: WhitelistRuleFields<R>, ) { this.$fullTypeName = composeSuiType( WhitelistRule.$typeName, ...typeArgs ) as `${typeof PKG_V1}::oracle_aggregator::WhitelistRule<${PhantomToTypeStr<R>}>`; this.$typeArgs = typeArgs;
+
+ this.dummyField = fields.dummyField; }
+
+ static reified<R extends PhantomReified<PhantomTypeArgument>>( R: R ): WhitelistRuleReified<ToPhantomTypeArgument<R>> { return { typeName: WhitelistRule.$typeName, fullTypeName: composeSuiType( WhitelistRule.$typeName, ...[extractType(R)] ) as `${typeof PKG_V1}::oracle_aggregator::WhitelistRule<${PhantomToTypeStr<ToPhantomTypeArgument<R>>}>`, typeArgs: [ extractType(R) ] as [PhantomToTypeStr<ToPhantomTypeArgument<R>>], isPhantom: WhitelistRule.$isPhantom, reifiedTypeArgs: [R], fromFields: (fields: Record<string, any>) => WhitelistRule.fromFields( R, fields, ), fromFieldsWithTypes: (item: FieldsWithTypes) => WhitelistRule.fromFieldsWithTypes( R, item, ), fromBcs: (data: Uint8Array) => WhitelistRule.fromBcs( R, data, ), bcs: WhitelistRule.bcs, fromJSONField: (field: any) => WhitelistRule.fromJSONField( R, field, ), fromJSON: (json: Record<string, any>) => WhitelistRule.fromJSON( R, json, ), fromSuiParsedData: (content: SuiParsedData) => WhitelistRule.fromSuiParsedData( R, content, ), fromSuiObjectData: (content: SuiObjectData) => WhitelistRule.fromSuiObjectData( R, content, ), fetch: async (client: SuiClient, id: string) => WhitelistRule.fetch( client, R, id, ), new: ( fields: WhitelistRuleFields<ToPhantomTypeArgument<R>>, ) => { return new WhitelistRule( [extractType(R)], fields ) }, kind: "StructClassReified", } }
+
+ static get r() { return WhitelistRule.reified }
+
+ static phantom<R extends PhantomReified<PhantomTypeArgument>>( R: R ): PhantomReified<ToTypeStr<WhitelistRule<ToPhantomTypeArgument<R>>>> { return phantom(WhitelistRule.reified( R )); } static get p() { return WhitelistRule.phantom }
+
+ static get bcs() { return bcs.struct("WhitelistRule", {
+
+ dummy_field: bcs.bool()
+
+}) };
+
+ static fromFields<R extends PhantomReified<PhantomTypeArgument>>( typeArg: R, fields: Record<string, any> ): WhitelistRule<ToPhantomTypeArgument<R>> { return WhitelistRule.reified( typeArg, ).new( { dummyField: decodeFromFields("bool", fields.dummy_field) } ) }
+
+ static fromFieldsWithTypes<R extends PhantomReified<PhantomTypeArgument>>( typeArg: R, item: FieldsWithTypes ): WhitelistRule<ToPhantomTypeArgument<R>> { if (!isWhitelistRule(item.type)) { throw new Error("not a WhitelistRule type");
+
+ } assertFieldsWithTypesArgsMatch(item, [typeArg]);
+
+ return WhitelistRule.reified( typeArg, ).new( { dummyField: decodeFromFieldsWithTypes("bool", item.fields.dummy_field) } ) }
+
+ static fromBcs<R extends PhantomReified<PhantomTypeArgument>>( typeArg: R, data: Uint8Array ): WhitelistRule<ToPhantomTypeArgument<R>> { return WhitelistRule.fromFields( typeArg, WhitelistRule.bcs.parse(data) ) }
+
+ toJSONField() { return {
+
+ dummyField: this.dummyField,
+
+} }
+
+ toJSON() { return { $typeName: this.$typeName, $typeArgs: this.$typeArgs, ...this.toJSONField() } }
+
+ static fromJSONField<R extends PhantomReified<PhantomTypeArgument>>( typeArg: R, field: any ): WhitelistRule<ToPhantomTypeArgument<R>> { return WhitelistRule.reified( typeArg, ).new( { dummyField: decodeFromJSONField("bool", field.dummyField) } ) }
+
+ static fromJSON<R extends PhantomReified<PhantomTypeArgument>>( typeArg: R, json: Record<string, any> ): WhitelistRule<ToPhantomTypeArgument<R>> { if (json.$typeName !== WhitelistRule.$typeName) { throw new Error("not a WithTwoGenerics json object") }; assertReifiedTypeArgsMatch( composeSuiType(WhitelistRule.$typeName, extractType(typeArg)), json.$typeArgs, [typeArg], )
+
+ return WhitelistRule.fromJSONField( typeArg, json, ) }
+
+ static fromSuiParsedData<R extends PhantomReified<PhantomTypeArgument>>( typeArg: R, content: SuiParsedData ): WhitelistRule<ToPhantomTypeArgument<R>> { if (content.dataType !== "moveObject") { throw new Error("not an object"); } if (!isWhitelistRule(content.type)) { throw new Error(`object at ${(content.fields as any).id} is not a WhitelistRule object`); } return WhitelistRule.fromFieldsWithTypes( typeArg, content ); }
+
+ static fromSuiObjectData<R extends PhantomReified<PhantomTypeArgument>>( typeArg: R, data: SuiObjectData ): WhitelistRule<ToPhantomTypeArgument<R>> { if (data.bcs) { if (data.bcs.dataType !== "moveObject" || !isWhitelistRule(data.bcs.type)) { throw new Error(`object at is not a WhitelistRule object`); }
+
+ const gotTypeArgs = parseTypeName(data.bcs.type).typeArgs; if (gotTypeArgs.length !== 1) { throw new Error(`type argument mismatch: expected 1 type argument but got '${gotTypeArgs.length}'`); }; const gotTypeArg = compressSuiType(gotTypeArgs[0]); const expectedTypeArg = compressSuiType(extractType(typeArg)); if (gotTypeArg !== compressSuiType(extractType(typeArg))) { throw new Error(`type argument mismatch: expected '${expectedTypeArg}' but got '${gotTypeArg}'`); };
+
+ return WhitelistRule.fromBcs( typeArg, fromB64(data.bcs.bcsBytes) ); } if (data.content) { return WhitelistRule.fromSuiParsedData( typeArg, data.content ) } throw new Error( "Both `bcs` and `content` fields are missing from the data. Include `showBcs` or `showContent` in the request." ); }
+
+ static async fetch<R extends PhantomReified<PhantomTypeArgument>>( client: SuiClient, typeArg: R, id: string ): Promise<WhitelistRule<ToPhantomTypeArgument<R>>> { const res = await client.getObject({ id, options: { showBcs: true, }, }); if (res.error) { throw new Error(`error fetching WhitelistRule object at id ${id}: ${res.error.code}`); } if (res.data?.bcs?.dataType !== "moveObject" || !isWhitelistRule(res.data.bcs.type)) { throw new Error(`object at id ${id} is not a WhitelistRule object`); }
+
+ return WhitelistRule.fromSuiObjectData( typeArg, res.data ); }
 
  }
