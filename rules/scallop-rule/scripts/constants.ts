@@ -1,0 +1,31 @@
+export const CONFIG = "0xc420988a5a851dab0c66b96c001a8af9c6a2d5f48b9fc35f5a6712fbf05fc9e9";
+export const ADMIN_CAP = "0x2a01ecc3c75bbb083be8abcf85102e415cfb839a88967e8b285a55823ac9b2fd";
+
+export const STINGRAY_ORACLE_PACKAGE = "0x13a66b8420a0c6ec51f485275fcfcddefd273ab932b4b75e72c9fd8ef308c5bc";
+
+export const STINGRAY_ORACLE = "0x30425c12c6c4ece5db8d6c1ec9b5e6611cc94f4fca7f699345a0256442b83d49";
+export const SUPRA_ORACLE_HOLDER = "0xaa0315f0748c1f24ddb2b45f7939cff40f7a8104af5ccbc4a1d32f870c0b4105";
+
+export const SCALLOP_VERSION = "0x07871c4b3c847a0f674510d4978d5cf6f960452795e8ff6f189fd2088a3f6ac7";
+export const SCALLOP_MARKET = "0xa757975255146dc9686aa823b7838b507f315d704f428cbadad2f4ea061939d9";
+
+export const SUI_PAIR_ID = 90;
+export const DEEP_PAIR_ID = 491;
+export const NAVX_PAIR_ID = 408;
+export const CETUS_PAIR_ID = 93;
+export const WAL_PAIR_ID = 534;
+export const SWITCHBOARD_SUI_AGGREGATOR = "0x3dccd6bd97adead20adf313b377108794060a5c3398e8f0e02a70ea173a6a2fe";
+export const PYTH_SUI_PRICE_INFO_OBJECT = "0x801dbc2f0053d34734814b2d6df491ce7807a725fe9a01ad74a07e9c51396c37";
+export const PYTH_DEEP_PRICE_INFO_OBJECT = "0x8c7f3a322b94cc69db2a2ac575cbd94bf5766113324c3a3eceac91e3e88a51ed";
+export const PYTH_NAVX_PRICE_INFO_OBJECT = "0x5b117a6a2de70796bffe36495bad576b788a34c33ca0648bd57852ead3f41e32";
+export const PYTH_CETUS_PRICE_INFO_OBJECT = "";
+// === Coin Types ===
+export const VSUI_COIN_TYPE = "0x549e8b69270defbfafd4f94e17ec44cdbdd99820b33bda2278dea3b9a32d3f55::cert::CERT";
+export const DEEP_COIN_TYPE = "0xdeeb7a4662eec9f2f3def03fb937a663dddaa2e215b8078a284d026b7946c270::deep::DEEP";
+export const NAVX_COIN_TYPE = "0xa99b8952d4f7d947ea77fe0ecdcc9e5fc0bcab2841d6e2a5aa00c3044e5544b5::navx::NAVX";
+export const CETUS_COIN_TYPE = "0x06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS";
+export const WAL_COIN_TYPE = "0x356a26eb9e012a68958082340d4c4116e7f55615cf27affcff209cf0ae544f59::wal::WAL";
+// === Scallop Coin Type ===
+export const SCALLOP_SUI_COIN_TYPE = "0xaafc4f740de0dd0dde642a31148fb94517087052f19afb0f7bed1dc41a50c77b::scallop_sui::SCALLOP_SUI";
+export const SCALLOP_DEEP_COIN_TYPE = "0xeb7a05a3224837c5e5503575aed0be73c091d1ce5e43aa3c3e716e0ae614608f::scallop_deep::SCALLOP_DEEP";
+export const SCALLOP_WAL_COIN_TYPE = "0x622345b3f80ea5947567760eec7b9639d0582adcfd6ab9fccb85437aeda7c0d0::scallop_wal::SCALLOP_WAL";

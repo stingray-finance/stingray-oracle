@@ -42,11 +42,3 @@ public fun update_price(
 
 }
 
-public fun check_share(
-    stake_pool: &StakePool,
-    metadata: &Metadata<VSUI>,
-){
-    let vsui_price = stake_pool.lst_amount_to_sui_amount( metadata, 1000000000);
-    assert!(false, vsui_price);
-}
-

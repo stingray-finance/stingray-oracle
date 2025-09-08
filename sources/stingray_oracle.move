@@ -263,6 +263,14 @@ public fun get_price(
     oracle_aggregator.price_info()
 }
 
+public fun get_decimal(
+    self: &StingrayOracle,
+    coin_type: String,
+): u8{
+    let oracle_aggregator =self.borrow_oracle_aggregator(coin_type);
+    oracle_aggregator.price_info().decimals()
+}
+
 public fun is_price_supported(
     self: &StingrayOracle,
     coin_type: TypeName,

@@ -42,9 +42,10 @@ fun add_new_oracle_aggregator<CoinT>(
 ){
     scenario.next_tx(ADMIN);
     {
+
         let admin_cap = scenario.take_from_address<AdminCap>(ADMIN);
         let mut stingray_oracle  = scenario.take_shared<StingrayOracle>();
-        stingray_oracle.new_oracle_aggregator<CoinT>(&admin_cap, option::none(), option::none(), option::none(), PRECISION, TOLERANCE_MS);
+        stingray_oracle.new_oracle_aggregator<CoinT>(&admin_cap, option::none(), option::none(), option::none(), PRECISION, TOLERANCE_MS, scenario.ctx());
 
         ts::return_shared(stingray_oracle);
         scenario.return_to_sender(admin_cap);
