@@ -2,7 +2,7 @@
 
 [move]
 version = 3
-manifest_digest = "52B419BA731E4FD0C5C3857A8B254BBA9C834B22DCF00849C8BE7BBABDB922D2"
+manifest_digest = "F6F04639FD485D31ACE27E306F1FDBC4F485CE1C679C67FD1B0A6385F320C39A"
 deps_digest = "F9B494B64F0615AED0E98FC12A85B85ECD2BC5185C22D30E7F67786BB52E507C"
 dependencies = [
   { id = "Pyth", name = "Pyth" },
@@ -34,7 +34,7 @@ dependencies = [
 
 [[move.package]]
 id = "SupraOracle"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_holder" }
+source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "mainnet", subdir = "sui/mainnet/supra_holder" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -59,7 +59,7 @@ dependencies = [
 
 [[move.package]]
 id = "supra_utils"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_utils" }
+source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "mainnet", subdir = "sui/mainnet/supra_utils" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -67,7 +67,7 @@ dependencies = [
 
 [[move.package]]
 id = "supra_validator"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_validator" }
+source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "mainnet", subdir = "sui/mainnet/supra_validator" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -75,14 +75,6 @@ dependencies = [
 ]
 
 [move.toolchain-version]
-compiler-version = "1.54.2"
+compiler-version = "1.55.0"
 edition = "2024.beta"
 flavor = "sui"
-
-[env]
-
-[env.mainnet]
-chain-id = "35834a8a"
-original-published-id = "0xe007d0aff9155276a962b8cfab25d42b6d220b3cbfd5a0b525e00e737b3e2799"
-latest-published-id = "0xe007d0aff9155276a962b8cfab25d42b6d220b3cbfd5a0b525e00e737b3e2799"
-published-version = "2"

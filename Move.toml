@@ -1,11 +1,11 @@
 [package]
 name = "StingrayOracle"
 edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
-published-at = "0xe007d0aff9155276a962b8cfab25d42b6d220b3cbfd5a0b525e00e737b3e2799"
+published-at = "0x4983bdd9b0f5744703ad69d909237dab2c4ab4648f8529803674c267e1b82f9f"
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/mainnet", override = true }
 Pyth = {git = "https://github.com/pyth-network/pyth-crosschain.git", subdir = "target_chains/sui/contracts", rev = "sui-contract-mainnet"}
-SupraOracle = { git = "https://github.com/Entropy-Foundation/dora-interface.git", subdir = "sui/mainnet/supra_holder", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", override = true }
+SupraOracle = { git = "https://github.com/Entropy-Foundation/dora-interface.git", subdir = "sui/mainnet/supra_holder", rev = "mainnet", override = true }
 Switchboard = {git = "https://github.com/switchboard-xyz/sui.git", subdir = "on_demand/", rev = "main"}
 
 
