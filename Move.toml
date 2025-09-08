@@ -5,11 +5,13 @@ published-at = "0x4983bdd9b0f5744703ad69d909237dab2c4ab4648f8529803674c267e1b82f
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/mainnet", override = true }
 Pyth = {git = "https://github.com/pyth-network/pyth-crosschain.git", subdir = "target_chains/sui/contracts", rev = "sui-contract-mainnet"}
-SupraOracle = { git = "https://github.com/Entropy-Foundation/dora-interface.git", subdir = "sui/mainnet/supra_holder", rev = "mainnet", override = true }
+# SupraOracle = { git = "https://github.com/Entropy-Foundation/dora-interface.git", subdir = "sui/mainnet/supra_holder", rev = "mainnet", override = true }
+SupraOracle = { local = "./partners/supra/sui/mainnet/supra_holder" }
 Switchboard = {git = "https://github.com/switchboard-xyz/sui.git", subdir = "on_demand/", rev = "main"}
 
 
 [addresses]
 stingray_oracle = "0x0"
+SupraOracle = "0x5d8fbbf6f908a4af8c6d072669a462d53e03eb3c1d863bd0359dc818c69ea706"
 
 
