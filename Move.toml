@@ -1,7 +1,7 @@
 [package]
 name = "StingrayOracle"
 edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
-published-at = "0x4983bdd9b0f5744703ad69d909237dab2c4ab4648f8529803674c267e1b82f9f"
+published-at = "0x711bf347f4f82b6786194da3f150f72be76fa0d38d0fbe76abc8f7376207d205"
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/mainnet", override = true }
 Pyth = {git = "https://github.com/pyth-network/pyth-crosschain.git", subdir = "target_chains/sui/contracts", rev = "sui-contract-mainnet"}
