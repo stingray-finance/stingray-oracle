@@ -91,7 +91,7 @@ public fun new_oracle_aggregator<CoinT>(
     ctx: &mut TxContext,
 ){
     let oracle_aggregator = oracle_aggregator::new(type_name::get<CoinT>().into_string(), pyth, switchboard, supra, decimals, tolerance_ms, ctx);
-    let key = type_name::get<CoinT>();
+    let key = type_name::with_defining_ids<CoinT>();
     if (df::exists_(&self.id, key)){
         err_asset_already_existed();
     };
@@ -103,23 +103,25 @@ public fun update_tolerance_ms<CoinT>(
     self: &mut StingrayOracle,
     new_tolerance_ms: u64,
 ){
-    let coin_type = type_name::get<CoinT>().into_string();
+    let coin_type = type_name::with_defining_ids<CoinT>().into_string();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
     oracle_aggregator.update_tolerance_ms(new_tolerance_ms);
 }
 
 public fun deactivate<CoinT>(
     self: &mut StingrayOracle,
+    _: &AdminCap,
 ){
-    let coin_type = type_name::get<CoinT>().into_string();
+    let coin_type = type_name::with_defining_ids<CoinT>().into_string();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
     oracle_aggregator.deactive();
 }
 
 public fun activate<CoinT>(
     self: &mut StingrayOracle,
+    _: &AdminCap,
 ){
-    let coin_type = type_name::get<CoinT>().into_string();
+    let coin_type = type_name::with_defining_ids<CoinT>().into_string();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
     oracle_aggregator.active();
 }
@@ -129,7 +131,7 @@ public fun update_pyth<CoinT>(
     _: &AdminCap,
     new_pyth: Option<address>,
 ){
-    let coin_type = type_name::get<CoinT>().into_string();
+    let coin_type = type_name::with_defining_ids<CoinT>().into_string();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
     oracle_aggregator.set_pyth(new_pyth);
 }
@@ -139,7 +141,7 @@ public fun update_switchboard<CoinT>(
     _: &AdminCap,
     new_switchboard: Option<address>,
 ){
-    let coin_type = type_name::get<CoinT>().into_string();
+    let coin_type = type_name::with_defining_ids<CoinT>().into_string();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
     oracle_aggregator.set_switchboard(new_switchboard);
 }
@@ -149,7 +151,7 @@ public fun update_supra<CoinT>(
     _: &AdminCap,
     new_supra: Option<u32>,
 ){
-    let coin_type = type_name::get<CoinT>().into_string();
+    let coin_type = type_name::with_defining_ids<CoinT>().into_string();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
     oracle_aggregator.set_supra(new_supra);
 }
@@ -186,7 +188,7 @@ public fun update_price_by_switchboard<CoinT>(
     aggregator: &Aggregator,
     clock: &Clock,
 ){
-    let coin_type = type_name::get<CoinT>();
+    let coin_type = type_name::with_defining_ids<CoinT>();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type.into_string());
     let mut price_sources = oracle_aggregator::new_price_sources(coin_type);
     price_sources.add_switchboard_price(coin_type,  oracle_aggregator, aggregator);
@@ -198,7 +200,7 @@ public fun update_price_by_pyth<CoinT>(
     price_info_object: &PriceInfoObject,
     clock: &Clock,
 ){
-    let coin_type = type_name::get<CoinT>();
+    let coin_type = type_name::with_defining_ids<CoinT>();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type.into_string());
     let mut price_sources = oracle_aggregator::new_price_sources(coin_type);
     price_sources.add_pyth_price(coin_type, oracle_aggregator, price_info_object, clock);
@@ -211,7 +213,7 @@ public fun update_price_by_supra<CoinT>(
     pair_id: u32,
     clock: &Clock,
 ){
-    let coin_type = type_name::get<CoinT>();
+    let coin_type = type_name::with_defining_ids<CoinT>();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type.into_string());
     let mut price_sources = oracle_aggregator::new_price_sources(coin_type);
     price_sources.add_supra_price(coin_type, oracle_aggregator, supra_holder, pair_id);
@@ -223,7 +225,7 @@ public fun add_rule<CoinT, RuleT: drop>(
     self: &mut StingrayOracle,
     _: &AdminCap,
 ){
-    let coin_type = type_name::get<CoinT>().into_string();
+    let coin_type = type_name::with_defining_ids<CoinT>().into_string();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
     oracle_aggregator.add_rule<RuleT>();
 }
@@ -232,7 +234,7 @@ public fun remove_rule<CoinT, RuleT: drop>(
     self: &mut StingrayOracle,
     _: &AdminCap,
 ){
-    let coin_type = type_name::get<CoinT>().into_string();
+    let coin_type = type_name::with_defining_ids<CoinT>().into_string();
     let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type);
     oracle_aggregator.remove_rule<RuleT>();
 }
@@ -282,6 +284,13 @@ public fun is_price_supported(
     }    
 }
 
+public fun is_coin_type_added(
+    self: &StingrayOracle,
+    coin_type: TypeName,
+): bool {
+    self.asset_types.contains(&coin_type.into_string())
+}
+
 // === Private Functions ===
 fun new_oracle(
     ctx: &mut TxContext,
@@ -301,6 +310,163 @@ fun new_oracle(
 
 // === Test Functions ===
 #[test_only]
+use stingray_oracle::supra_price_fetcher;
+#[test_only]
+use stingray_oracle::pyth_price_fetcher;
+#[test_only]
+use stingray_oracle::switchboard_price_fetcher;
+
+
+#[test_only]
 public fun testing_init(ctx: &mut TxContext){
     init(ctx);
+}
+
+#[test_only]
+public fun testing_add_new_oracle_aggregator<CoinT>(
+    self: &mut StingrayOracle,
+    admin_cap: &AdminCap,
+    precision: u8,
+    tolerance_ts: u64,
+    ctx: &mut TxContext
+){
+    self.new_oracle_aggregator<CoinT>(admin_cap, option::none(), option::none(), option::none(), precision, tolerance_ts, ctx);
+}
+
+#[test_only]
+public fun testing_update_price_by_supra<CoinT>(
+    self: &mut StingrayOracle, 
+    price: u64,
+    decimals: u8,
+    clock: &Clock,
+){
+    let coin_type = type_name::with_defining_ids<CoinT>();
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type.into_string());
+    let mut price_sources = oracle_aggregator::new_price_sources(coin_type);
+    let current_price = supra_price_fetcher::testing_fetch_price<CoinT>(price, decimals, clock, oracle_aggregator.borrow_supra().is_none());
+    oracle_aggregator::testing_add_supra_price(&mut price_sources, current_price);
+    oracle_aggregator.update_price(clock, price_sources);
+}
+
+#[test_only]
+public fun testing_update_price_by_pyth<CoinT>(
+    self: &mut StingrayOracle, 
+    price: u64,
+    decimals: u8,
+    clock: &Clock,
+){
+    let coin_type = type_name::with_defining_ids<CoinT>();
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type.into_string());
+    let mut price_sources = oracle_aggregator::new_price_sources(coin_type);
+    let current_price = pyth_price_fetcher::testing_fetch_price<CoinT>(price, decimals, clock, oracle_aggregator.borrow_pyth().is_none());
+    oracle_aggregator::testing_add_supra_price(&mut price_sources, current_price);
+    oracle_aggregator.update_price(clock, price_sources);
+}
+
+#[test_only]
+public fun testing_update_price_by_switchboard<CoinT>(
+    self: &mut StingrayOracle, 
+    price: u64,
+    decimals: u8,
+    clock: &Clock,
+){
+    let coin_type = type_name::with_defining_ids<CoinT>();
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type.into_string());
+    let mut price_sources = oracle_aggregator::new_price_sources(coin_type);
+    let current_price = switchboard_price_fetcher::testing_fetch_price<CoinT>(price, decimals, clock, oracle_aggregator.borrow_switchboard().is_none());
+    oracle_aggregator::testing_add_supra_price(&mut price_sources, current_price);
+    oracle_aggregator.update_price(clock, price_sources);
+}
+
+#[test_only]
+public fun testing_update_price_by_all_oracles<CoinT>(
+    self: &mut StingrayOracle, 
+    price1: u64,
+    decimals1: u8,
+    price2: u64,
+    decimals2: u8,
+    price3: u64,
+    decimals3: u8,
+    clock: &Clock,
+){
+    let coin_type = type_name::with_defining_ids<CoinT>();
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type.into_string());
+    let mut price_sources = oracle_aggregator::new_price_sources(coin_type);
+    
+    let supra_current_price = supra_price_fetcher::testing_fetch_price<CoinT>(price1, decimals1, clock, oracle_aggregator.borrow_supra().is_none());
+    oracle_aggregator::testing_add_supra_price(&mut price_sources, supra_current_price);
+    
+    let pyth_current_price = pyth_price_fetcher::testing_fetch_price<CoinT>(price2, decimals2, clock, oracle_aggregator.borrow_pyth().is_none());
+    oracle_aggregator::testing_add_pyth_price(&mut price_sources, pyth_current_price);
+    
+    let switchboard_current_price = switchboard_price_fetcher::testing_fetch_price<CoinT>(price3, decimals3, clock, oracle_aggregator.borrow_switchboard().is_none());
+    oracle_aggregator::testing_add_switchboard_price(&mut price_sources, switchboard_current_price);
+
+    oracle_aggregator.update_price(clock, price_sources);
+}
+
+#[test_only]
+public fun testing_update_price_by_pyth_and_switchboard<CoinT>(
+    self: &mut StingrayOracle, 
+    price1: u64,
+    decimals1: u8,
+    price2: u64,
+    decimals2: u8,
+    clock: &Clock,
+){
+    let coin_type = type_name::with_defining_ids<CoinT>();
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type.into_string());
+    let mut price_sources = oracle_aggregator::new_price_sources(coin_type);
+    
+    let pyth_current_price = pyth_price_fetcher::testing_fetch_price<CoinT>(price1, decimals1, clock, oracle_aggregator.borrow_pyth().is_none());
+    oracle_aggregator::testing_add_pyth_price(&mut price_sources, pyth_current_price);
+    
+    let switchboard_current_price = switchboard_price_fetcher::testing_fetch_price<CoinT>(price2, decimals2, clock, oracle_aggregator.borrow_switchboard().is_none());
+    oracle_aggregator::testing_add_switchboard_price(&mut price_sources, switchboard_current_price);
+
+    oracle_aggregator.update_price(clock, price_sources);
+}
+
+#[test_only]
+public fun testing_update_price_by_pyth_and_supra<CoinT>(
+    self: &mut StingrayOracle, 
+    price1: u64,
+    decimals1: u8,
+    price2: u64,
+    decimals2: u8,
+    clock: &Clock,
+){
+    let coin_type = type_name::with_defining_ids<CoinT>();
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type.into_string());
+    let mut price_sources = oracle_aggregator::new_price_sources(coin_type);
+    
+    let supra_current_price = supra_price_fetcher::testing_fetch_price<CoinT>(price1, decimals1, clock, oracle_aggregator.borrow_supra().is_none());
+    oracle_aggregator::testing_add_supra_price(&mut price_sources, supra_current_price);
+    
+    let pyth_current_price = pyth_price_fetcher::testing_fetch_price<CoinT>(price2, decimals2, clock, oracle_aggregator.borrow_pyth().is_none());
+    oracle_aggregator::testing_add_pyth_price(&mut price_sources, pyth_current_price);
+
+    oracle_aggregator.update_price(clock, price_sources);
+}
+
+#[test_only]
+public fun testing_update_price_by_supra_and_switchboard<CoinT>(
+    self: &mut StingrayOracle, 
+    price1: u64,
+    decimals1: u8,
+    price2: u64,
+    decimals2: u8,
+    clock: &Clock,
+){
+    let coin_type = type_name::with_defining_ids<CoinT>();
+    let oracle_aggregator = self.borrow_oracle_aggregator_mut(coin_type.into_string());
+    let mut price_sources = oracle_aggregator::new_price_sources(coin_type);
+    
+    let supra_current_price = supra_price_fetcher::testing_fetch_price<CoinT>(price1, decimals1, clock, oracle_aggregator.borrow_supra().is_none());
+    oracle_aggregator::testing_add_supra_price(&mut price_sources, supra_current_price);
+    
+    let switchboard_current_price = switchboard_price_fetcher::testing_fetch_price<CoinT>(price2, decimals2, clock, oracle_aggregator.borrow_switchboard().is_none());
+    oracle_aggregator::testing_add_switchboard_price(&mut price_sources, switchboard_current_price);
+
+    oracle_aggregator.update_price(clock, price_sources);
 }

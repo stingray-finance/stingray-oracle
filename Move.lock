@@ -2,7 +2,7 @@
 
 [move]
 version = 3
-manifest_digest = "F6F04639FD485D31ACE27E306F1FDBC4F485CE1C679C67FD1B0A6385F320C39A"
+manifest_digest = "66CB5B1AFABCBF3BBD55029775ABDA58E66BF795917240D4978AB57311D09BBD"
 deps_digest = "F9B494B64F0615AED0E98FC12A85B85ECD2BC5185C22D30E7F67786BB52E507C"
 dependencies = [
   { id = "Pyth", name = "Pyth" },
@@ -34,7 +34,7 @@ dependencies = [
 
 [[move.package]]
 id = "SupraOracle"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "mainnet", subdir = "sui/mainnet/supra_holder" }
+source = { local = "partners/supra/sui/mainnet/supra_holder" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -59,7 +59,7 @@ dependencies = [
 
 [[move.package]]
 id = "supra_utils"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "mainnet", subdir = "sui/mainnet/supra_utils" }
+source = { local = "partners/supra/sui/mainnet/supra_utils" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -67,7 +67,7 @@ dependencies = [
 
 [[move.package]]
 id = "supra_validator"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "mainnet", subdir = "sui/mainnet/supra_validator" }
+source = { local = "partners/supra/sui/mainnet/supra_validator" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },

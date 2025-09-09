@@ -12,6 +12,7 @@ use stingray_oracle::{
 use std::{
     ascii::{ String },
 };
+use sui::clock::Clock;
 
 // === Errors ===
 
@@ -34,24 +35,16 @@ public fun fetch_price(
 
 // === Test Functions ===
 #[test_only]
-use std::{
-    type_name::{ Self,},
-};
-use switchboard::aggregator;
-use switchboard::decimal;
-use switchboard::decimal::DECIMALS;
-#[test_only]
 public fun testing_fetch_price<CoinT>(
     price: u64,
     decimals: u8,
-    timestamp_ms: u64,
+    clock: &Clock,
     is_none: bool,
 ): Option<CurrentPrice>{
     if (is_none){
         option::none()
     }else{
-        let coin_type = type_name::get<CoinT>().into_string();
-        let current_price = current_price::new_current_price(coin_type, price, decimals, timestamp_ms);
+        let current_price = current_price::testing_new_current_price<CoinT>( price, decimals, clock);
         option::some(current_price)
     }
 }

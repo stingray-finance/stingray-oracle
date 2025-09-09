@@ -1,6 +1,7 @@
 module stingray_oracle::current_price;
 
 use std::ascii::{ String };
+use std::type_name;
 
 public struct CurrentPrice has copy, drop {
     coin_type: String,
@@ -44,5 +45,26 @@ public(package) fun new_current_price(
         price,
         decimals,
         timestamp_ms,
+    }
+}
+
+// === Test Functions ===
+#[test_only]
+use sui::{ 
+    clock::{ Self, Clock },
+};
+
+#[test_only]
+public fun testing_new_current_price<CoinT>(
+    price: u64,
+    decimals: u8,
+    clock: &Clock,
+): CurrentPrice{
+    let coin_type = type_name::with_defining_ids<CoinT>().into_string();
+    CurrentPrice{
+        coin_type,
+        price,
+        decimals,
+        timestamp_ms: clock.timestamp_ms(),
     }
 }

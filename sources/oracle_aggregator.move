@@ -29,6 +29,8 @@ use stingray_oracle::{
 use SupraOracle::{
     SupraSValueFeed::{ OracleHolder },
 };
+use switchboard::decimal;
+use switchboard::on_demand::AdminCap;
 
 // === Errors ===
 const ESignificientPriceDiff: u64 = 0;
@@ -404,7 +406,7 @@ public fun testing_new_aggregator_oracle<CoinT>(
     tolerance_ms: u64,
     ctx: &mut TxContext
 ): OracleAggregator{
-    let coin_type = type_name::get<CoinT>().into_string();
+    let coin_type = type_name::with_defining_ids<CoinT>().into_string();
     OracleAggregator{
         id: object::new(ctx),
         coin_type, 
@@ -445,3 +447,15 @@ public fun testing_add_supra_price(
 ){
     price_sources.sources.insert(SUPRA_KEY, current_price);
 }
+
+#[test_only]
+public fun testing_new_price_info(
+    price: u64,
+    decimals: u8,
+): PriceInfo{
+    PriceInfo{
+        price,
+        decimals
+    }
+}
+
