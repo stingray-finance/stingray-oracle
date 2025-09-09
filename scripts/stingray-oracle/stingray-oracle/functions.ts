@@ -22,7 +22,9 @@ export interface UpdateToleranceMsArgs { self: TransactionObjectInput; newTolera
 
 export function updateToleranceMs( tx: Transaction, typeArg: string, args: UpdateToleranceMsArgs ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::update_tolerance_ms`, typeArguments: [typeArg], arguments: [ obj(tx, args.self), pure(tx, args.newToleranceMs, `u64`) ], }) }
 
-export function activate( tx: Transaction, typeArg: string, self: TransactionObjectInput ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::activate`, typeArguments: [typeArg], arguments: [ obj(tx, self) ], }) }
+export interface ActivateArgs { self: TransactionObjectInput; adminCap: TransactionObjectInput }
+
+export function activate( tx: Transaction, typeArg: string, args: ActivateArgs ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::activate`, typeArguments: [typeArg], arguments: [ obj(tx, args.self), obj(tx, args.adminCap) ], }) }
 
 export interface AddVersionArgs { self: TransactionObjectInput; adminCap: TransactionObjectInput; newVersion: bigint | TransactionArgument }
 
@@ -36,7 +38,9 @@ export interface BorrowOracleAggregatorMutArgs { self: TransactionObjectInput; c
 
 export function borrowOracleAggregatorMut( tx: Transaction, args: BorrowOracleAggregatorMutArgs ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::borrow_oracle_aggregator_mut`, arguments: [ obj(tx, args.self), pure(tx, args.coinType, `${String.$typeName}`) ], }) }
 
-export function deactivate( tx: Transaction, typeArg: string, self: TransactionObjectInput ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::deactivate`, typeArguments: [typeArg], arguments: [ obj(tx, self) ], }) }
+export interface DeactivateArgs { self: TransactionObjectInput; adminCap: TransactionObjectInput }
+
+export function deactivate( tx: Transaction, typeArg: string, args: DeactivateArgs ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::deactivate`, typeArguments: [typeArg], arguments: [ obj(tx, args.self), obj(tx, args.adminCap) ], }) }
 
 export function errAssetAlreadyExisted( tx: Transaction, ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::err_asset_already_existed`, arguments: [ ], }) }
 
@@ -49,6 +53,14 @@ export function errVersionAlreadyExisted( tx: Transaction, ) { return tx.moveCal
 export function errVersionNotAllowed( tx: Transaction, ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::err_version_not_allowed`, arguments: [ ], }) }
 
 export function errVersionNotExisted( tx: Transaction, ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::err_version_not_existed`, arguments: [ ], }) }
+
+export interface GetDecimalArgs { self: TransactionObjectInput; coinType: string | TransactionArgument }
+
+export function getDecimal( tx: Transaction, args: GetDecimalArgs ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::get_decimal`, arguments: [ obj(tx, args.self), pure(tx, args.coinType, `${String.$typeName}`) ], }) }
+
+export interface IsCoinTypeAddedArgs { self: TransactionObjectInput; coinType: TransactionObjectInput }
+
+export function isCoinTypeAdded( tx: Transaction, args: IsCoinTypeAddedArgs ) { return tx.moveCall({ target: `${PUBLISHED_AT}::stingray_oracle::is_coin_type_added`, arguments: [ obj(tx, args.self), obj(tx, args.coinType) ], }) }
 
 export interface IsPriceSupportedArgs { self: TransactionObjectInput; coinType: TransactionObjectInput }
 
