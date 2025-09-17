@@ -326,11 +326,14 @@ public fun testing_init(ctx: &mut TxContext){
 public fun testing_add_new_oracle_aggregator<CoinT>(
     self: &mut StingrayOracle,
     admin_cap: &AdminCap,
+    pyth: Option<address>,
+    switchboard: Option<address>,
+    supra: Option<u32>,
     precision: u8,
     tolerance_ts: u64,
     ctx: &mut TxContext
 ){
-    self.new_oracle_aggregator<CoinT>(admin_cap, option::none(), option::none(), option::none(), precision, tolerance_ts, ctx);
+    self.new_oracle_aggregator<CoinT>(admin_cap, pyth,  switchboard, supra, precision, tolerance_ts, ctx);
 }
 
 #[test_only]

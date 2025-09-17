@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@mysten/sui": "^1.38.0",
+    "@types/node": "^24.5.0",
+    "typescript": "^5.9.2"
+  }
+}
