@@ -2,7 +2,7 @@
 
 [move]
 version = 3
-manifest_digest = "FAF2B4583FABA5AFB38B97FB51B765640CEF624FBA76916BDFA5E242D7CDCBC4"
+manifest_digest = "B04151C5641C5D7D65A1CBE019034B63E34E847CEAB32F93FB7AE8566306A5EF"
 deps_digest = "52B406A7A21811BEF51751CF88DA0E76DAEFFEAC888D4F4060B1A72BBE7D8D35"
 dependencies = [
   { id = "MoveStdlib", name = "MoveStdlib" },
@@ -15,7 +15,7 @@ dependencies = [
 
 [[move.package]]
 id = "Bridge"
-source = { git = "https://github.com/MystenLabs/sui.git", rev = "2cde80b5766b0bc2073908e10f6e3c81c93fd691", subdir = "crates/sui-framework/packages/bridge" }
+source = { git = "https://github.com/MystenLabs/sui.git", rev = "f63c9fc78e2171fa174dc43e757ded416c204558", subdir = "crates/sui-framework/packages/bridge" }
 
 dependencies = [
   { id = "MoveStdlib", name = "MoveStdlib" },
@@ -66,7 +66,7 @@ dependencies = [
 
 [[move.package]]
 id = "SupraOracle"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_holder" }
+source = { local = "../../partners/supra/sui/mainnet/supra_holder" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -111,7 +111,7 @@ dependencies = [
 
 [[move.package]]
 id = "supra_utils"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_utils" }
+source = { local = "../../partners/supra/sui/mainnet/supra_utils" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -119,7 +119,7 @@ dependencies = [
 
 [[move.package]]
 id = "supra_validator"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_validator" }
+source = { local = "../../partners/supra/sui/mainnet/supra_validator" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -127,6 +127,14 @@ dependencies = [
 ]
 
 [move.toolchain-version]
-compiler-version = "1.55.0"
+compiler-version = "1.57.0"
 edition = "2024.beta"
 flavor = "sui"
+
+[env]
+
+[env.mainnet]
+chain-id = "35834a8a"
+original-published-id = "0x628f3a0b11d429672fa820f582d21c6def0caccbe3267e8880286db994d47883"
+latest-published-id = "0x628f3a0b11d429672fa820f582d21c6def0caccbe3267e8880286db994d47883"
+published-version = "1"

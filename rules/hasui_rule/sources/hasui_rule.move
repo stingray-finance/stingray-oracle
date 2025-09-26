@@ -28,12 +28,12 @@ public fun update_price(
     staking: &Staking,
     clock: &Clock
 ){
-    let sui_type = type_name::get<SUI>().into_string();
+    let sui_type = type_name::with_defining_ids<SUI>().into_string();
     let price_info = oracle.get_price(clock, sui_type);
     let sui_price = price_info.price();
     let sui_decimals = price_info.decimals();
 
-    let hasui_type = type_name::get<HASUI>().into_string();
+    let hasui_type = type_name::with_defining_ids<HASUI>().into_string();
     let exchange_rate = staking.get_exchange_rate(); // hasui_price / sui_price
     let hasui_oracle = oracle.borrow_oracle_aggregator_mut(hasui_type);
     let hasui_price_raw = sui_price * exchange_rate / PRECISION;

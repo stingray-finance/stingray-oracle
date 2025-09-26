@@ -2,7 +2,7 @@
 
 [move]
 version = 3
-manifest_digest = "31F4AF580ABF14E6C7A503A0F4EFC3AB2A30A96E2EA473EA5B3E9B5FA26BDD96"
+manifest_digest = "B2D4C1D1353CBDABA9364E6B51CFFCB2D90E02D0F4BEBF251274EDFEE52D412E"
 deps_digest = "397E6A9F7A624706DBDFEE056CE88391A15876868FD18A88504DA74EB458D697"
 dependencies = [
   { id = "MoveStdlib", name = "MoveStdlib" },
@@ -55,7 +55,7 @@ dependencies = [
 
 [[move.package]]
 id = "SupraOracle"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_holder" }
+source = { local = "../../partners/supra/sui/mainnet/supra_holder" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -90,7 +90,7 @@ dependencies = [
 
 [[move.package]]
 id = "supra_utils"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_utils" }
+source = { local = "../../partners/supra/sui/mainnet/supra_utils" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -98,7 +98,7 @@ dependencies = [
 
 [[move.package]]
 id = "supra_validator"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_validator" }
+source = { local = "../../partners/supra/sui/mainnet/supra_validator" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -106,7 +106,7 @@ dependencies = [
 ]
 
 [move.toolchain-version]
-compiler-version = "1.52.2"
+compiler-version = "1.57.0"
 edition = "2024.beta"
 flavor = "sui"
 
@@ -114,6 +114,6 @@ flavor = "sui"
 
 [env.mainnet]
 chain-id = "35834a8a"
-original-published-id = "0x7a317c247f54bdff4f29bba90658539189c61792bf8eea9441d428d700b04ec1"
-latest-published-id = "0x7a317c247f54bdff4f29bba90658539189c61792bf8eea9441d428d700b04ec1"
+original-published-id = "0x5619dce372c8fe6a9132706ea1a5bc406e6fa2990bb7f9ad6ffedd55cd7358dc"
+latest-published-id = "0x5619dce372c8fe6a9132706ea1a5bc406e6fa2990bb7f9ad6ffedd55cd7358dc"
 published-version = "1"

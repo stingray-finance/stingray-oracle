@@ -1,6 +1,6 @@
-export const PACKAGE_ID = "0x9e59c5fdcd7c29277bfd80c348d4b2cca341b75eaedd425cc91d9e0509126ac8"; 
-export const PUBLISHED_AT = "0xb9f41f6f107665ab822c95c4f09ee5a3ec1aa0148a1fcef9536c145784d69b2b";
-export const PKG_V1 = "0x9e59c5fdcd7c29277bfd80c348d4b2cca341b75eaedd425cc91d9e0509126ac8";  
+export const PACKAGE_ID = "0x7539c99373b97ebd861cd37de4a97c5e2ceb8a68d577843d1126c37caa51c1ff"; 
+export const PUBLISHED_AT = "0x7539c99373b97ebd861cd37de4a97c5e2ceb8a68d577843d1126c37caa51c1ff";
+export const PKG_V1 = "0x7539c99373b97ebd861cd37de4a97c5e2ceb8a68d577843d1126c37caa51c1ff";  
 import {obj, pure} from "./_framework/util";
 import { SuiClient, getFullnodeUrl } from "@mysten/sui/client";
 import { Transaction } from "@mysten/sui/transactions";

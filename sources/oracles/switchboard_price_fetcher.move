@@ -12,7 +12,6 @@ use stingray_oracle::{
 use std::{
     ascii::{ String },
 };
-use sui::clock::Clock;
 
 // === Errors ===
 

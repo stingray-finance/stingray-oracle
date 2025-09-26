@@ -1,7 +1,7 @@
 [package]
 name = "ssui_rule"
 edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
-published-at = "0x9c519ec8fddb2fa9cd4441d773eaa7305e23032271ae7a27324e62d255016a2c"
+published-at = "0x628f3a0b11d429672fa820f582d21c6def0caccbe3267e8880286db994d47883"
 # license = ""           # e.g., "MIT", "GPL", "Apache 2.0"
 # authors = ["..."]      # e.g., ["Joe Smith (joesmith@noemail.com)", "John Snow (johnsnow@noemail.com)"]
 

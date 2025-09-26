@@ -1,7 +1,7 @@
 [package]
 name = "vsui_rule"
 edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
-published-at = "0x7a317c247f54bdff4f29bba90658539189c61792bf8eea9441d428d700b04ec1"
+published-at = "0x5619dce372c8fe6a9132706ea1a5bc406e6fa2990bb7f9ad6ffedd55cd7358dc"
 # license = ""           # e.g., "MIT", "GPL", "Apache 2.0"
 # authors = ["..."]      # e.g., ["Joe Smith (joesmith@noemail.com)", "John Snow (johnsnow@noemail.com)"]
 

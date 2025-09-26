@@ -2,7 +2,7 @@
 
 [move]
 version = 3
-manifest_digest = "BF75A1944B16D60268210FAD0E4DCFFF3678FC15E0E1ED2C9B100DC715F74357"
+manifest_digest = "0CFCCD31E8411C2175DBA0B0415A2158908A109D4E17846162BC7BBE75C386B2"
 deps_digest = "060AD7E57DFB13104F21BE5F5C3759D03F0553FC3229247D9A7A6B45F50D03A3"
 dependencies = [
   { id = "ScallopProtocol", name = "ScallopProtocol" },
@@ -73,7 +73,7 @@ dependencies = [
 
 [[move.package]]
 id = "SupraOracle"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_holder" }
+source = { local = "../../partners/supra/sui/mainnet/supra_holder" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -122,7 +122,7 @@ dependencies = [
 
 [[move.package]]
 id = "supra_utils"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_utils" }
+source = { local = "../../partners/supra/sui/mainnet/supra_utils" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -130,7 +130,7 @@ dependencies = [
 
 [[move.package]]
 id = "supra_validator"
-source = { git = "https://github.com/Entropy-Foundation/dora-interface.git", rev = "51c1875d86f20abe2a22e8d2ae7a3a2a2a56d5a1", subdir = "sui/mainnet/supra_validator" }
+source = { local = "../../partners/supra/sui/mainnet/supra_validator" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -138,7 +138,7 @@ dependencies = [
 ]
 
 [move.toolchain-version]
-compiler-version = "1.52.2"
+compiler-version = "1.57.0"
 edition = "2024.beta"
 flavor = "sui"
 
@@ -146,6 +146,6 @@ flavor = "sui"
 
 [env.mainnet]
 chain-id = "35834a8a"
-original-published-id = "0x9e59c5fdcd7c29277bfd80c348d4b2cca341b75eaedd425cc91d9e0509126ac8"
-latest-published-id = "0xb9f41f6f107665ab822c95c4f09ee5a3ec1aa0148a1fcef9536c145784d69b2b"
-published-version = "3"
+original-published-id = "0x7539c99373b97ebd861cd37de4a97c5e2ceb8a68d577843d1126c37caa51c1ff"
+latest-published-id = "0x7539c99373b97ebd861cd37de4a97c5e2ceb8a68d577843d1126c37caa51c1ff"
+published-version = "1"

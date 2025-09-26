@@ -29,8 +29,6 @@ use stingray_oracle::{
 use SupraOracle::{
     SupraSValueFeed::{ OracleHolder },
 };
-use switchboard::decimal;
-use switchboard::on_demand::AdminCap;
 
 // === Errors ===
 const ESignificientPriceDiff: u64 = 0;

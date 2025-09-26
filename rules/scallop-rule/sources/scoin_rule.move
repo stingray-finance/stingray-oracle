@@ -79,14 +79,14 @@ public fun update_price<SCoinT, CoinT>(
     if (!config.exists_pair<SCoinT, CoinT>()) {
         err_invalid_scoin_type_inputs();
     };
-    let coin_type = type_name::get<CoinT>();
+    let coin_type = type_name::with_defining_ids<CoinT>();
     let coin_price_info = oracle.get_price(clock, coin_type.into_string());
     let coin_price = coin_price_info.price();
     let coin_decimals = coin_price_info.decimals();
     let scoin_unit = utils::calc_coin_to_scoin(
         version, market, coin_type, clock, 10u64.pow(coin_decimals)
     );
-    let scoin_type = type_name::get<SCoinT>();
+    let scoin_type = type_name::with_defining_ids<SCoinT>();
     let scoin_decimals = 10u64.pow(oracle.get_decimal(scoin_type.into_string()));
     let scoin_price = (
         scoin_decimals as u128) *
@@ -98,7 +98,6 @@ public fun update_price<SCoinT, CoinT>(
 }
 
 // Getter Funs
-
 public fun exists_pair<SCOIN, COIN>(config: &Config): bool {
     config.scoin_pairs.contains(
         &new_scoin_pair<SCOIN, COIN>(),
@@ -108,7 +107,7 @@ public fun exists_pair<SCOIN, COIN>(config: &Config): bool {
 // Internal Funs
 fun new_scoin_pair<SCOIN, COIN>(): SCoinPair {
     SCoinPair {
-        scoin_type: type_name::get<SCOIN>(),
-        coin_type: type_name::get<COIN>(),
+        scoin_type: type_name::with_defining_ids<SCOIN>(),
+        coin_type: type_name::with_defining_ids<COIN>(),
     }
 }

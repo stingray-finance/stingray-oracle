@@ -90,7 +90,7 @@ public fun new_oracle_aggregator<CoinT>(
     tolerance_ms: u64,
     ctx: &mut TxContext,
 ){
-    let oracle_aggregator = oracle_aggregator::new(type_name::get<CoinT>().into_string(), pyth, switchboard, supra, decimals, tolerance_ms, ctx);
+    let oracle_aggregator = oracle_aggregator::new(type_name::with_defining_ids<CoinT>().into_string(), pyth, switchboard, supra, decimals, tolerance_ms, ctx);
     let key = type_name::with_defining_ids<CoinT>();
     if (df::exists_(&self.id, key)){
         err_asset_already_existed();
