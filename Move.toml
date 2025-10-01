@@ -3,6 +3,7 @@ name = "StingrayOracle"
 edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
 published-at = "0x49e7d33a8df46c0f450fd0219cd19b471bf42ce4f307197c61b45609a59c22d8"
 [dependencies]
+MoveStdlib = { git = "https://github.com/MystenLabs/sui.git", rev = "framework/mainnet", subdir = "crates/sui-framework/packages/move-stdlib", override = true }
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/mainnet", override = true }
 Pyth = {git = "https://github.com/pyth-network/pyth-crosschain.git", subdir = "target_chains/sui/contracts", rev = "sui-contract-mainnet"}
 # SupraOracle = { git = "https://github.com/Entropy-Foundation/dora-interface.git", subdir = "sui/mainnet/supra_holder", rev = "mainnet", override = true }
