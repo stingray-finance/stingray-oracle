@@ -1,7 +1,7 @@
 # Stingray Oracle
 * Package
 ```
-0x49e7d33a8df46c0f450fd0219cd19b471bf42ce4f307197c61b45609a59c22d8
+0x61832ba30f4284e28713894f2889eb1b6a126d6f4575df24100c495e2a3f92c3
 ```
 * UpgradeCap
 ```
