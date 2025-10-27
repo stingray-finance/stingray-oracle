@@ -2,7 +2,6 @@ module stingray_oracle::current_price;
 
 use std::{
     ascii::{ String },
-    type_name::{ Self },
 };
 
 public struct CurrentPrice has copy, drop {

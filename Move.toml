@@ -8,11 +8,11 @@ Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-fram
 Pyth = {git = "https://github.com/pyth-network/pyth-crosschain.git", subdir = "target_chains/sui/contracts", rev = "sui-contract-mainnet"}
 # SupraOracle = { git = "https://github.com/Entropy-Foundation/dora-interface.git", subdir = "sui/mainnet/supra_holder", rev = "mainnet", override = true }
 SupraOracle = { local = "./partners/supra/sui/mainnet/supra_holder" }
-switchboard = {git = "https://github.com/switchboard-xyz/sui.git", subdir = "on_demand/", rev = "main"}
+switchboard = { local = "./partners/switchboard/on_demand/"}
 
 
 [addresses]
-stingray_oracle = "0x49e7d33a8df46c0f450fd0219cd19b471bf42ce4f307197c61b45609a59c22d8"
+stingray_oracle = "0x0"
 SupraOracle = "0x5d8fbbf6f908a4af8c6d072669a462d53e03eb3c1d863bd0359dc818c69ea706"
 
 
