@@ -41,6 +41,10 @@ use std::{
     type_name::{ Self,},
 };
 #[test_only]
+use sui::{
+    clock::{ Clock },
+};
+#[test_only]
 public fun testing_fetch_price<CoinT>(
     price: u64,
     decimals: u8,

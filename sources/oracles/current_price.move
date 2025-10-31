@@ -54,6 +54,10 @@ public(package) fun new_current_price(
 use sui::{ 
     clock::{ Self, Clock },
 };
+#[test_only]
+use std::{
+    type_name::{ Self,},
+};
 
 #[test_only]
 public fun testing_new_current_price<CoinT>(
