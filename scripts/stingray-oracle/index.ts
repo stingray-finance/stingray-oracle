@@ -18,7 +18,7 @@ import {
     addRule,
     removeRule
 } from "./stingray-oracle/functions";
-import { ADMIN_CAP, STINGRAY_ORACLE, SUPRA_ORACLE_HOLDER, PYTH_SUI_PRICE_INFO_OBJECT, SWITCHBOARD_SUI_AGGREGATOR, VSUI_RULE_PACKAGE_ID, VSUI_COIN_TYPE, PYTH_DEEP_PRICE_INFO_OBJECT, NAVX_COIN_TYPE, PYTH_NAVX_PRICE_INFO_OBJECT, DEEP_COIN_TYPE, CETUS_COIN_TYPE, SCOIN_RULE_PACKAGE_ID, SCALLOP_SUI_COIN_TYPE, SCALLOP_DEEP_COIN_TYPE, PYTH_WAL_PRICE_INFO_OBJECT, SUPRA_PAIR_IDS, WAL_COIN_TYPE, SCALLOP_WAL_COIN_TYPE, HASUI_RULE_PACKAGE_ID, HASUI_COIN_TYPE, SPRING_SUI_RULE_PACAKGE_ID, SPRING_SUI_COIN_TYPE, SUI_COIN_TYPE, SUI_PRICE_FEED, DEEP_PRICE_FEED, NAVX_PRICE_FEED, PYTH_CETUS_PRICE_INFO_OBJECT, CETUS_PRICE_FEED, WAL_PRICE_FEED, TLP_RULE_PACAKGE_ID, TLP_COIN_TYPE  } from "../constants";
+import { ADMIN_CAP, STINGRAY_ORACLE, SUPRA_ORACLE_HOLDER, PYTH_SUI_PRICE_INFO_OBJECT, SWITCHBOARD_SUI_AGGREGATOR, VSUI_RULE_PACKAGE_ID, VSUI_COIN_TYPE, PYTH_DEEP_PRICE_INFO_OBJECT, NAVX_COIN_TYPE, PYTH_NAVX_PRICE_INFO_OBJECT, DEEP_COIN_TYPE, CETUS_COIN_TYPE, SCOIN_RULE_PACKAGE_ID, SCALLOP_SUI_COIN_TYPE, SCALLOP_DEEP_COIN_TYPE, PYTH_WAL_PRICE_INFO_OBJECT, SUPRA_PAIR_IDS, WAL_COIN_TYPE, SCALLOP_WAL_COIN_TYPE, HASUI_RULE_PACKAGE_ID, HASUI_COIN_TYPE, SPRING_SUI_RULE_PACAKGE_ID, SPRING_SUI_COIN_TYPE, SUI_COIN_TYPE, SUI_PRICE_FEED, DEEP_PRICE_FEED, NAVX_PRICE_FEED, PYTH_CETUS_PRICE_INFO_OBJECT, CETUS_PRICE_FEED, WAL_PRICE_FEED, TLP_RULE_PACAKGE_ID, TLP_COIN_TYPE, SCA_COIN_TYPE, SCA_PRICE_FEED, PYTH_SCA_PRICE_INFO_OBJECT, SCALLOP_SCA_COIN_TYPE, X_SUI_RULE_PACKAGE_ID, X_SUI_COIN_TYPE  } from "../constants";
 import { SUI_CLOCK_OBJECT_ID } from "@mysten/sui/utils";
 
 const client = new SuiClient({ url: getFullnodeUrl('mainnet') });
@@ -116,75 +116,75 @@ const main = async () => {
 
         const tx = new Transaction();
 
-        // add sui price to oracle
-        await createNewOracleAggregator(tx, SUI_COIN_TYPE, PYTH_SUI_PRICE_INFO_OBJECT, null, SUPRA_PAIR_IDS[SUI_COIN_TYPE]);
-        await updatePriceWithSupra(tx, SUI_COIN_TYPE, SUPRA_ORACLE_HOLDER, SUPRA_PAIR_IDS[SUI_COIN_TYPE] );
-        await updatePriceWithPyth(tx, SUI_COIN_TYPE, PYTH_SUI_PRICE_INFO_OBJECT, SUI_PRICE_FEED);
-        await activateOracle(tx, SUI_COIN_TYPE);
+        // // add sui price to oracle
+        // await createNewOracleAggregator(tx, SUI_COIN_TYPE, PYTH_SUI_PRICE_INFO_OBJECT, null, SUPRA_PAIR_IDS[SUI_COIN_TYPE]);
+        // await updatePriceWithSupra(tx, SUI_COIN_TYPE, SUPRA_ORACLE_HOLDER, SUPRA_PAIR_IDS[SUI_COIN_TYPE] );
+        // await updatePriceWithPyth(tx, SUI_COIN_TYPE, PYTH_SUI_PRICE_INFO_OBJECT, SUI_PRICE_FEED);
+        // await activateOracle(tx, SUI_COIN_TYPE);
         
-        // add vsui price to oracle
-        const vsuiRuleType = `${VSUI_RULE_PACKAGE_ID}::vsui_rule::Rule`;
-        await createNewOracleAggregator(tx, VSUI_COIN_TYPE, null, null, null);
-        await activateOracle(tx, VSUI_COIN_TYPE);
-        await addWhitelistRule(tx, VSUI_COIN_TYPE, vsuiRuleType);
-        // await removeWhitelistRule(tx, VSUI_COIN_TYPE, VSUI_COIN_TYPE);
-        // await addWhitelistRule(tx, VSUI_COIN_TYPE, VSUI_COIN_TYPE);
+        // // add vsui price to oracle
+        // const vsuiRuleType = `${VSUI_RULE_PACKAGE_ID}::vsui_rule::Rule`;
+        // await createNewOracleAggregator(tx, VSUI_COIN_TYPE, null, null, null);
+        // await activateOracle(tx, VSUI_COIN_TYPE);
+        // await addWhitelistRule(tx, VSUI_COIN_TYPE, vsuiRuleType);
+        // // await removeWhitelistRule(tx, VSUI_COIN_TYPE, VSUI_COIN_TYPE);
+        // // await addWhitelistRule(tx, VSUI_COIN_TYPE, VSUI_COIN_TYPE);
 
-        // add deep price to oracle
-        await createNewOracleAggregator(tx, DEEP_COIN_TYPE, PYTH_DEEP_PRICE_INFO_OBJECT, null, SUPRA_PAIR_IDS[DEEP_COIN_TYPE]);
-        await updatePriceWithSupra(tx, DEEP_COIN_TYPE, SUPRA_ORACLE_HOLDER, SUPRA_PAIR_IDS[DEEP_COIN_TYPE] );
-        await updatePriceWithPyth(tx, DEEP_COIN_TYPE, PYTH_DEEP_PRICE_INFO_OBJECT, DEEP_PRICE_FEED);
-        await activateOracle(tx, DEEP_COIN_TYPE);
+        // // add deep price to oracle
+        // await createNewOracleAggregator(tx, DEEP_COIN_TYPE, PYTH_DEEP_PRICE_INFO_OBJECT, null, SUPRA_PAIR_IDS[DEEP_COIN_TYPE]);
+        // await updatePriceWithSupra(tx, DEEP_COIN_TYPE, SUPRA_ORACLE_HOLDER, SUPRA_PAIR_IDS[DEEP_COIN_TYPE] );
+        // await updatePriceWithPyth(tx, DEEP_COIN_TYPE, PYTH_DEEP_PRICE_INFO_OBJECT, DEEP_PRICE_FEED);
+        // await activateOracle(tx, DEEP_COIN_TYPE);
 
-        // add navx price to oracle
-        await createNewOracleAggregator(tx, NAVX_COIN_TYPE, PYTH_NAVX_PRICE_INFO_OBJECT, null, SUPRA_PAIR_IDS[NAVX_COIN_TYPE]);
-        await updatePriceWithSupra(tx, NAVX_COIN_TYPE, SUPRA_ORACLE_HOLDER, SUPRA_PAIR_IDS[NAVX_COIN_TYPE] );
-        await updatePriceWithPyth(tx, NAVX_COIN_TYPE, PYTH_NAVX_PRICE_INFO_OBJECT, NAVX_PRICE_FEED);
-        await activateOracle(tx, NAVX_COIN_TYPE);
+        // // add navx price to oracle
+        // await createNewOracleAggregator(tx, NAVX_COIN_TYPE, PYTH_NAVX_PRICE_INFO_OBJECT, null, SUPRA_PAIR_IDS[NAVX_COIN_TYPE]);
+        // await updatePriceWithSupra(tx, NAVX_COIN_TYPE, SUPRA_ORACLE_HOLDER, SUPRA_PAIR_IDS[NAVX_COIN_TYPE] );
+        // await updatePriceWithPyth(tx, NAVX_COIN_TYPE, PYTH_NAVX_PRICE_INFO_OBJECT, NAVX_PRICE_FEED);
+        // await activateOracle(tx, NAVX_COIN_TYPE);
 
-        // add cetus price to oracle 
-        await createNewOracleAggregator(tx, CETUS_COIN_TYPE, PYTH_CETUS_PRICE_INFO_OBJECT, null, SUPRA_PAIR_IDS[CETUS_COIN_TYPE]);
-        await updatePriceWithSupra(tx, CETUS_COIN_TYPE, SUPRA_ORACLE_HOLDER, SUPRA_PAIR_IDS[CETUS_COIN_TYPE] );
-        await updatePriceWithPyth(tx, CETUS_COIN_TYPE, PYTH_CETUS_PRICE_INFO_OBJECT, CETUS_PRICE_FEED);
-        await activateOracle(tx, CETUS_COIN_TYPE);
+        // // add cetus price to oracle 
+        // await createNewOracleAggregator(tx, CETUS_COIN_TYPE, PYTH_CETUS_PRICE_INFO_OBJECT, null, SUPRA_PAIR_IDS[CETUS_COIN_TYPE]);
+        // await updatePriceWithSupra(tx, CETUS_COIN_TYPE, SUPRA_ORACLE_HOLDER, SUPRA_PAIR_IDS[CETUS_COIN_TYPE] );
+        // await updatePriceWithPyth(tx, CETUS_COIN_TYPE, PYTH_CETUS_PRICE_INFO_OBJECT, CETUS_PRICE_FEED);
+        // await activateOracle(tx, CETUS_COIN_TYPE);
 
-        // add ssui price to oracle
-        const scallopRuleType = `${SCOIN_RULE_PACKAGE_ID}::scoin_rule::Rule`;
-        await createNewOracleAggregator(tx, SCALLOP_SUI_COIN_TYPE, null, null, null);
-        await activateOracle(tx, SCALLOP_SUI_COIN_TYPE);
-        await addWhitelistRule(tx, SCALLOP_SUI_COIN_TYPE, scallopRuleType);
-        // await removeWhitelistRule(tx, SCALLOP_SUI_COIN_TYPE, scallopRuleType);
+        // // add ssui price to oracle
+        // const scallopRuleType = `${SCOIN_RULE_PACKAGE_ID}::scoin_rule::Rule`;
+        // await createNewOracleAggregator(tx, SCALLOP_SUI_COIN_TYPE, null, null, null);
+        // await activateOracle(tx, SCALLOP_SUI_COIN_TYPE);
+        // await addWhitelistRule(tx, SCALLOP_SUI_COIN_TYPE, scallopRuleType);
+        // // await removeWhitelistRule(tx, SCALLOP_SUI_COIN_TYPE, scallopRuleType);
 
-        // add sdeep price to oracle
-        await createNewOracleAggregator(tx, SCALLOP_DEEP_COIN_TYPE, null, null, null);
-        await activateOracle(tx, SCALLOP_DEEP_COIN_TYPE);
-        await addWhitelistRule(tx, SCALLOP_DEEP_COIN_TYPE, scallopRuleType);
+        // // add sdeep price to oracle
+        // await createNewOracleAggregator(tx, SCALLOP_DEEP_COIN_TYPE, null, null, null);
+        // await activateOracle(tx, SCALLOP_DEEP_COIN_TYPE);
+        // await addWhitelistRule(tx, SCALLOP_DEEP_COIN_TYPE, scallopRuleType);
 
-        // add wal price to oracle
-        await createNewOracleAggregator(tx, WAL_COIN_TYPE, PYTH_WAL_PRICE_INFO_OBJECT, null, SUPRA_PAIR_IDS[WAL_COIN_TYPE]);
-        await updatePriceWithSupra(tx, WAL_COIN_TYPE, SUPRA_ORACLE_HOLDER, SUPRA_PAIR_IDS[WAL_COIN_TYPE] );
-        await updatePriceWithPyth(tx, WAL_COIN_TYPE, PYTH_WAL_PRICE_INFO_OBJECT, WAL_PRICE_FEED);
-        await activateOracle(tx, WAL_COIN_TYPE);
+        // // add wal price to oracle
+        // await createNewOracleAggregator(tx, WAL_COIN_TYPE, PYTH_WAL_PRICE_INFO_OBJECT, null, SUPRA_PAIR_IDS[WAL_COIN_TYPE]);
+        // await updatePriceWithSupra(tx, WAL_COIN_TYPE, SUPRA_ORACLE_HOLDER, SUPRA_PAIR_IDS[WAL_COIN_TYPE] );
+        // await updatePriceWithPyth(tx, WAL_COIN_TYPE, PYTH_WAL_PRICE_INFO_OBJECT, WAL_PRICE_FEED);
+        // await activateOracle(tx, WAL_COIN_TYPE);
 
-        // add swal price to oracle
-        const sRuleType = `${SCOIN_RULE_PACKAGE_ID}::scoin_rule::Rule`;
-        await createNewOracleAggregator(tx, SCALLOP_WAL_COIN_TYPE, null, null, null);
-        await activateOracle(tx, SCALLOP_WAL_COIN_TYPE);
-        await addWhitelistRule(tx, SCALLOP_WAL_COIN_TYPE, sRuleType);
+        // // add swal price to oracle
+        // const sRuleType = `${SCOIN_RULE_PACKAGE_ID}::scoin_rule::Rule`;
+        // await createNewOracleAggregator(tx, SCALLOP_WAL_COIN_TYPE, null, null, null);
+        // await activateOracle(tx, SCALLOP_WAL_COIN_TYPE);
+        // await addWhitelistRule(tx, SCALLOP_WAL_COIN_TYPE, sRuleType);
 
-        // add vsui price to oracle
-        const hasuiRuleType = `${HASUI_RULE_PACKAGE_ID}::hasui_rule::Rule`;
-        await createNewOracleAggregator(tx, HASUI_COIN_TYPE, null, null, null);
-        await activateOracle(tx, HASUI_COIN_TYPE);
-        await addWhitelistRule(tx, HASUI_COIN_TYPE, hasuiRuleType);
-        // await removeWhitelistRule(tx, HASUI_COIN_TYPE, HASUI_COIN_TYPE);
-        // await addWhitelistRule(tx, HASUI_COIN_TYPE, HASUI_COIN_TYPE);
+        // // add vsui price to oracle
+        // const hasuiRuleType = `${HASUI_RULE_PACKAGE_ID}::hasui_rule::Rule`;
+        // await createNewOracleAggregator(tx, HASUI_COIN_TYPE, null, null, null);
+        // await activateOracle(tx, HASUI_COIN_TYPE);
+        // await addWhitelistRule(tx, HASUI_COIN_TYPE, hasuiRuleType);
+        // // await removeWhitelistRule(tx, HASUI_COIN_TYPE, HASUI_COIN_TYPE);
+        // // await addWhitelistRule(tx, HASUI_COIN_TYPE, HASUI_COIN_TYPE);
 
-        // add ssui price to oracle
-        const ssuiRuleType = `${SPRING_SUI_RULE_PACAKGE_ID}::ssui_rule::Rule`;
-        await createNewOracleAggregator(tx, SPRING_SUI_COIN_TYPE, null, null, null);
-        await activateOracle(tx, SPRING_SUI_COIN_TYPE);
-        await addWhitelistRule(tx, SPRING_SUI_COIN_TYPE, ssuiRuleType);
+        // // add ssui price to oracle
+        // const ssuiRuleType = `${SPRING_SUI_RULE_PACAKGE_ID}::ssui_rule::Rule`;
+        // await createNewOracleAggregator(tx, SPRING_SUI_COIN_TYPE, null, null, null);
+        // await activateOracle(tx, SPRING_SUI_COIN_TYPE);
+        // await addWhitelistRule(tx, SPRING_SUI_COIN_TYPE, ssuiRuleType);
 
         // add tlp 
         // const tlpRuleType = `${TLP_RULE_PACAKGE_ID}::tlp_rule::Rule`;
@@ -192,6 +192,23 @@ const main = async () => {
         // await activateOracle(tx, TLP_COIN_TYPE);
         // await addWhitelistRule(tx, TLP_COIN_TYPE, tlpRuleType);
 
+        // add sca
+        // await createNewOracleAggregator(tx, SCA_COIN_TYPE, PYTH_SCA_PRICE_INFO_OBJECT, null, SUPRA_PAIR_IDS[SCA_COIN_TYPE]);
+        // await updatePriceWithSupra(tx, SCA_COIN_TYPE, SUPRA_ORACLE_HOLDER, SUPRA_PAIR_IDS[SCA_COIN_TYPE] );
+        // await updatePriceWithPyth(tx, SCA_COIN_TYPE, PYTH_SCA_PRICE_INFO_OBJECT, SCA_PRICE_FEED);
+        // await activateOracle(tx, SCA_COIN_TYPE);
+
+        // add ssca price to oracle
+        // const sRuleType = `${SCOIN_RULE_PACKAGE_ID}::scoin_rule::Rule`;
+        // await createNewOracleAggregator(tx, SCALLOP_SCA_COIN_TYPE, null, null, null);
+        // await activateOracle(tx, SCALLOP_SCA_COIN_TYPE);
+        // await addWhitelistRule(tx, SCALLOP_SCA_COIN_TYPE, sRuleType);
+
+        // add xsui price to oracle
+        // const xsuiRuleType = `${X_SUI_RULE_PACKAGE_ID}::xsui_rule::Rule`;
+        // await createNewOracleAggregator(tx, X_SUI_COIN_TYPE, null, null, null);
+        // await activateOracle(tx, X_SUI_COIN_TYPE);
+        // await addWhitelistRule(tx, X_SUI_COIN_TYPE, xsuiRuleType);
 
         let digest = await client.signAndExecuteTransaction({
             transaction: tx,
