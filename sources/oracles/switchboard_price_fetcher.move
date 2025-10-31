@@ -34,6 +34,10 @@ public fun fetch_price(
 
 // === Test Functions ===
 #[test_only]
+use sui::{
+    clock::{ Clock },
+};
+#[test_only]
 public fun testing_fetch_price<CoinT>(
     price: u64,
     decimals: u8,
